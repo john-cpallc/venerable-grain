@@ -2,7 +2,7 @@
 
 Hobby furniture workshop site — solid hardwood, joinery over hardware. Portfolio and process stories first; soft contact for repair, restoration, modernization, and commissions.
 
-**Live (after Pages is enabled):** https://jmdelay.github.io/venerable-grain/
+**Live (after Pages is enabled):** https://john-cpallc.github.io/venerable-grain/
 
 ## Local development
 
