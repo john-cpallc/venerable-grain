@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000" role="img" aria-label="Placeholder">
+  <defs>
+    <linearGradient id="g" x1="0.2" y1="0" x2="0.8" y2="1">
+      <stop offset="0%" stop-color="#1a1714"/>
+      <stop offset="40%" stop-color="#3a322a"/>
+      <stop offset="100%" stop-color="#12100e"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#g)"/>
+  <g opacity="0.38" stroke="#7a8580" stroke-width="1" fill="none">
+    <path d="M100 60 C 180 180, 140 300, 220 420 S 340 580, 260 720 S 180 880, 280 980"/>
+    <path d="M280 40 C 360 160, 320 290, 400 400 S 520 560, 440 700 S 360 870, 460 970"/>
+    <path d="M480 70 C 560 190, 520 310, 600 420 S 700 590, 640 730 S 580 900, 700 990"/>
+  </g>
+  <text x="400" y="520" text-anchor="middle" fill="#a89f93" font-family="Georgia, serif" font-size="28" letter-spacing="4">PLACEHOLDER</text>
+</svg>

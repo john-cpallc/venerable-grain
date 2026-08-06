@@ -1,0 +1,26 @@
+---
+layout: default
+---
+<article class="story">
+  <header class="story__header">
+    <p class="eyebrow">Story</p>
+    <h1 class="story__title">{{ page.title }}</h1>
+    {% if page.subtitle %}
+    <p class="story__subtitle">{{ page.subtitle }}</p>
+    {% endif %}
+  </header>
+  {% if page.image %}
+  <figure class="story__figure">
+    <img src="{{ page.image | relative_url }}" alt="{{ page.title }}" loading="lazy">
+  </figure>
+  {% endif %}
+  <div class="prose">
+    {{ content }}
+  </div>
+  {% if page.piece %}
+  <p class="story__piece-link">
+    <a href="{{ page.piece | relative_url }}">See the finished piece</a>
+  </p>
+  {% endif %}
+  <p class="back-link"><a href="{{ '/stories/' | relative_url }}">← All stories</a></p>
+</article>

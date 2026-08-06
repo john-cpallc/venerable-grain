@@ -1,0 +1,49 @@
+title: "Venerable Grain"
+description: "Solid hardwood furniture, repair, and commissions — joinery over hardware."
+url: "https://jmdelay.github.io"
+baseurl: "/venerable-grain"
+repository: "jmdelay/venerable-grain"
+
+email: "hello@venerablegrain.example"
+
+permalink: pretty
+
+include:
+  - _pages
+
+collections:
+  pieces:
+    output: true
+    permalink: /work/:name/
+  stories:
+    output: true
+    permalink: /stories/:name/
+
+defaults:
+  - scope:
+      path: ""
+      type: pages
+    values:
+      layout: default
+  - scope:
+      path: ""
+      type: pieces
+    values:
+      layout: piece
+  - scope:
+      path: ""
+      type: stories
+    values:
+      layout: story
+
+plugins:
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+  - README.md
+  - .gitignore
+  - .github

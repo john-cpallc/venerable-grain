@@ -1,0 +1,24 @@
+<header class="site-header">
+  <a class="wordmark" href="{{ '/' | relative_url }}">Venerable Grain</a>
+  <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Menu">
+    <span></span>
+  </button>
+  <nav id="site-nav" class="site-nav" aria-label="Primary">
+    <a href="{{ '/work/' | relative_url }}"{% if page.url contains '/work' %} aria-current="page"{% endif %}>Work</a>
+    <a href="{{ '/stories/' | relative_url }}"{% if page.url contains '/stories' %} aria-current="page"{% endif %}>Stories</a>
+    <a href="{{ '/about/' | relative_url }}"{% if page.url == '/about/' %} aria-current="page"{% endif %}>About</a>
+    <a href="{{ '/contact/' | relative_url }}"{% if page.url == '/contact/' %} aria-current="page"{% endif %}>Contact</a>
+  </nav>
+</header>
+<script>
+  (function () {
+    var toggle = document.querySelector('.nav-toggle');
+    var nav = document.getElementById('site-nav');
+    if (!toggle || !nav) return;
+    toggle.addEventListener('click', function () {
+      var open = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!open));
+      nav.classList.toggle('is-open', !open);
+    });
+  })();
+</script>
