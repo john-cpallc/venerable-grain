@@ -1,14 +1,14 @@
 ---
 layout: default
-title: Work
-permalink: /work/
+title: Collection
+permalink: /collection/
 description: Furniture in solid hardwood — new work, repair, and modernization.
 ---
 
 <div class="page">
   <header class="page__header">
-    <p class="eyebrow">Gallery</p>
-    <h1 class="page__title">Work</h1>
+    <p class="eyebrow">Work</p>
+    <h1 class="page__title">Collection</h1>
     <p class="page__lede">Finished pieces. Repair and modernization sit beside new work.</p>
   </header>
 

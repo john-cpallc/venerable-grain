@@ -2,7 +2,7 @@
 title: Side cabinet
 category: New
 wood: Walnut
-order: 2
+order: 3
 image: /assets/images/pieces/placeholder-cabinet.svg
 ---
 

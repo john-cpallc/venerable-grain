@@ -3,7 +3,7 @@ layout: default
 ---
 <article class="piece">
   <header class="piece__header">
-    <p class="eyebrow">{{ page.category | default: "Work" }}</p>
+    <p class="eyebrow">{{ page.category | default: "Collection" }}</p>
     <h1 class="piece__title">{{ page.title }}</h1>
     {% if page.wood %}
     <p class="piece__meta">{{ page.wood }}</p>
@@ -22,5 +22,5 @@ layout: default
     <a href="{{ page.story | relative_url }}">Read the process story</a>
   </p>
   {% endif %}
-  <p class="back-link"><a href="{{ '/work/' | relative_url }}">← All work</a></p>
+  <p class="back-link"><a href="{{ '/collection/' | relative_url }}">← Collection</a></p>
 </article>

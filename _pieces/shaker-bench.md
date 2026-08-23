@@ -2,7 +2,7 @@
 title: Shaker bench
 category: New
 wood: White oak
-order: 1
+order: 2
 image: /assets/images/pieces/placeholder-bench.svg
 story: /stories/fitting-the-bench/
 ---

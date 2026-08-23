@@ -3,7 +3,7 @@ title: Fitting the bench
 subtitle: Through tenons and a patient dry fit
 date: 2026-03-15
 image: /assets/images/stories/placeholder-process.svg
-piece: /work/shaker-bench/
+piece: /collection/shaker-bench/
 ---
 
 The bench started as a board and a drawing. White oak, quartersawn where it mattered for the seat.

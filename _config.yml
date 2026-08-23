@@ -14,7 +14,7 @@ include:
 collections:
   pieces:
     output: true
-    permalink: /work/:name/
+    permalink: /collection/:name/
   stories:
     output: true
     permalink: /stories/:name/

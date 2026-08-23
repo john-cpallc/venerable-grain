@@ -2,7 +2,7 @@
 title: Dining table
 category: Modernization
 wood: Reclaimed oak
-order: 3
+order: 4
 image: /assets/images/pieces/placeholder-table.svg
 ---
 

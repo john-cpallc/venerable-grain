@@ -4,7 +4,8 @@
     <span></span>
   </button>
   <nav id="site-nav" class="site-nav" aria-label="Primary">
-    <a href="{{ '/work/' | relative_url }}"{% if page.url contains '/work' %} aria-current="page"{% endif %}>Work</a>
+    <a href="{{ '/collection/' | relative_url }}"{% if page.url contains '/collection' or page.url contains '/work' %} aria-current="page"{% endif %}>Collection</a>
+    <a href="{{ '/materials/' | relative_url }}"{% if page.url == '/materials/' %} aria-current="page"{% endif %}>Materials</a>
     <a href="{{ '/stories/' | relative_url }}"{% if page.url contains '/stories' %} aria-current="page"{% endif %}>Stories</a>
     <a href="{{ '/about/' | relative_url }}"{% if page.url == '/about/' %} aria-current="page"{% endif %}>About</a>
     <a href="{{ '/contact/' | relative_url }}"{% if page.url == '/contact/' %} aria-current="page"{% endif %}>Contact</a>

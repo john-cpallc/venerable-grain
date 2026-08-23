@@ -2,19 +2,18 @@
 layout: default
 title: About
 permalink: /about/
-description: Solid hardwood furniture, repair, and commissions — low glue, low fasteners.
+description: Furniture, repair, restoration, modernization, and commissions.
 ---
 
 <div class="page">
   <header class="page__header">
-    <p class="eyebrow">Workshop</p>
+    <p class="eyebrow">Studio</p>
     <h1 class="page__title">About</h1>
     <p class="page__lede">Furniture built to last — and older pieces brought forward with care.</p>
   </header>
 
   <div class="prose about-block">
-    <h2>Materials</h2>
-    <p>Only solid hardwoods and old growth. Joints do the work: knockdown, sashimono-inspired fitting, Shaker restraint, Danish and midcentury line. Low glue. Low fasteners.</p>
+    <p>Venerable Grain is a hobby workshop for solid hardwood furniture. Work is meant to be looked at and used for a long time.</p>
   </div>
 
   <div class="about-block">
@@ -28,7 +27,6 @@ description: Solid hardwood furniture, repair, and commissions — low glue, low
   </div>
 
   <div class="prose about-block">
-    <h2>How it feels</h2>
-    <p>Quiet structure. Grain that earns the name. Work meant to be looked at — and used for a long time.</p>
+    <p>For how pieces come together, see <a href="{{ '/stories/' | relative_url }}">Stories</a>. For what goes into them, see <a href="{{ '/materials/' | relative_url }}">Materials</a>.</p>
   </div>
 </div>

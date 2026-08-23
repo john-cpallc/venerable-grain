@@ -36,9 +36,9 @@ Add a `CNAME` file and point DNS at GitHub Pages; set `url` / `baseurl` in `_con
 
 | Path | Purpose |
 |------|---------|
-| `_pieces/` | Gallery items (title, category, wood, image, optional story link) |
+| `_pieces/` | Collection items (title, category, wood, image, optional story link) |
 | `_stories/` | Process narratives |
-| `_pages/` | Work, Stories, About, Contact |
+| `_pages/` | Collection, Materials, Stories, About, Contact |
 | `assets/images/` | Replace SVG placeholders with real photos |
 
 Update `email` in `_config.yml` before sharing the contact page widely.
