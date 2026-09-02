@@ -8,10 +8,12 @@ Hobby furniture workshop site — solid hardwood, joinery over hardware. Portfol
 
 ```bash
 bundle install
-bundle exec jekyll serve --baseurl ""
+bundle exec jekyll serve --baseurl=
 ```
 
 Open http://localhost:4000
+
+PowerShell treats `""` as a missing argument, so use `--baseurl=` (equals, no quotes) rather than `--baseurl ""`.
 
 For a closer match to production (project Pages path):
 
