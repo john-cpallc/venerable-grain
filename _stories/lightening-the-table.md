@@ -2,7 +2,7 @@
 title: Lightening the table
 subtitle: His design, less of the factory
 date: 2026-09-01
-image: /assets/images/stories/dining-table-joinery.jpg
+image: /assets/images/stories/table-og.jpg
 piece: /collection/dining-table/
 ---
 
