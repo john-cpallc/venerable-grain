@@ -17,5 +17,8 @@
     {{ content }}
   </main>
   {% include footer.html %}
+  {% if page.script %}
+  <script src="{{ page.script | relative_url }}" defer></script>
+  {% endif %}
 </body>
 </html>

@@ -1,10 +1,15 @@
 title: "Venerable Grain"
 description: "Solid hardwood furniture, repair, and commissions — joinery over hardware."
-url: "https://john-cpallc.github.io"
-baseurl: "/venerable-grain"
+url: "https://venerablegrain.com"
+baseurl: ""
 repository: "john-cpallc/venerable-grain"
 
-email: "hello@venerablegrain.example"
+email: "hello@venerablegrain.com"
+
+# Sketch tool (Cloudflare Worker). Leave api blank to hide Generate until deployed.
+imagine:
+  api: "https://imagine.venerablegrain.com"
+  turnstile_site_key: ""
 
 permalink: pretty
 
@@ -47,3 +52,4 @@ exclude:
   - README.md
   - .gitignore
   - .github
+  - worker

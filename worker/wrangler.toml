@@ -1,0 +1,15 @@
+name = "venerable-grain-imagine"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+
+[vars]
+ALLOWED_ORIGINS = "https://venerablegrain.com,https://www.venerablegrain.com,https://john-cpallc.github.io,http://127.0.0.1:4000,http://localhost:4000"
+DAILY_BUDGET = "200"
+OPENAI_MODEL = "gpt-4.1-mini"
+
+# After the zone is on Cloudflare DNS:
+# [[routes]]
+# pattern = "imagine.venerablegrain.com/*"
+# zone_name = "venerablegrain.com"
