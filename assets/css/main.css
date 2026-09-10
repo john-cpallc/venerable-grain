@@ -638,15 +638,15 @@ h1, h2, h3 {
 }
 
 .page--imagine {
-  width: min(100% - 2 * var(--space), 42rem);
+  width: min(100% - 2 * var(--space), 46rem);
 }
 
 .madlib {
-  margin: 0 0 2rem;
+  margin: 0 0 1.35rem;
   font-family: var(--font-display);
-  font-size: clamp(1.35rem, 3.2vw, 1.75rem);
+  font-size: clamp(1.12rem, 2.5vw, 1.4rem);
   font-weight: 500;
-  line-height: 1.55;
+  line-height: 1.6;
   letter-spacing: -0.02em;
   color: var(--ink);
 }
@@ -680,14 +680,42 @@ h1, h2, h3 {
   outline: none;
 }
 
-.imagine-note {
-  display: grid;
-  gap: 0.45rem;
-  margin: 0 0 1.5rem;
-  max-width: var(--measure);
+.madlib-blank {
+  display: inline;
+  margin: 0 0.05em;
+  padding: 0 0.15em 0.05em;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  color: var(--wood);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  border-radius: 0;
 }
 
-.imagine-note__label {
+.madlib-blank:hover,
+.madlib-blank:focus {
+  border-bottom-color: var(--wood);
+  outline: none;
+}
+
+.madlib-blank--dim { width: 3.2rem; }
+.madlib-blank--mid { width: 8.5rem; max-width: 100%; }
+.madlib-blank--wide { width: 14rem; max-width: 100%; }
+.madlib-blank--full { width: min(22rem, 100%); }
+
+.imagine-picks {
+  margin: 0 0 1.75rem;
+  padding: 1.1rem 0 0;
+  border: none;
+  border-top: 1px solid var(--rule);
+}
+
+.imagine-picks__legend {
+  padding: 0;
   font-family: var(--font-body);
   font-size: 0.7rem;
   letter-spacing: 0.14em;
@@ -695,22 +723,18 @@ h1, h2, h3 {
   color: var(--type-muted);
 }
 
-.imagine-note input {
-  width: 100%;
-  padding: 0.55rem 0;
-  font-family: var(--font-body);
-  font-size: 1rem;
-  font-weight: 300;
-  color: var(--ink);
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid var(--rule);
-  border-radius: 0;
+.imagine-picks__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.65rem 1.25rem 0 0;
+  font-size: 0.95rem;
+  color: var(--type-muted);
+  cursor: pointer;
 }
 
-.imagine-note input:focus {
-  outline: none;
-  border-bottom-color: var(--wood);
+.imagine-picks__item input {
+  accent-color: var(--wood);
 }
 
 .imagine-preview {

@@ -10,6 +10,47 @@
   var download = document.getElementById("imagine-download");
   var emailLink = document.getElementById("imagine-email");
   var config = {};
+  var SELECT_KEYS = [
+    "piece",
+    "room",
+    "purpose",
+    "style",
+    "look",
+    "wood",
+    "finish",
+    "sheen",
+    "include",
+    "support",
+    "wear",
+    "users",
+    "budget",
+    "when",
+    "feel"
+  ];
+  var TEXT_KEYS = [
+    "pieceOther",
+    "roomOther",
+    "purposeOther",
+    "styleOther",
+    "woodOther",
+    "length",
+    "width",
+    "height",
+    "avoid",
+    "reference",
+    "like",
+    "change",
+    "whenNote",
+    "because",
+    "links"
+  ];
+  var OTHER = {
+    piece: "pieceOther",
+    room: "roomOther",
+    purpose: "purposeOther",
+    style: "styleOther",
+    wood: "woodOther"
+  };
 
   try {
     config = JSON.parse(document.getElementById("imagine-config").textContent);
@@ -17,42 +58,92 @@
     config = {};
   }
 
-  function slotsFromForm() {
+  function resolveChoice(select, other) {
+    if (select === "something else" || select === "somewhere else") {
+      return other || select;
+    }
+    return select;
+  }
+
+  function joinList(items) {
+    if (!items.length) return "";
+    if (items.length === 1) return items[0];
+    if (items.length === 2) return items[0] + " and " + items[1];
+    return items.slice(0, -1).join(", ") + ", and " + items[items.length - 1];
+  }
+
+  function slotsFromForm(forDisplay) {
     var data = new FormData(form);
-    return {
-      piece: data.get("piece") || "",
-      wood: data.get("wood") || "",
-      size: data.get("size") || "",
-      room: data.get("room") || "",
-      line: data.get("line") || "",
-      detail: data.get("detail") || "",
-      finish: data.get("finish") || "",
-      light: data.get("light") || "",
-      note: (data.get("note") || "").trim()
-    };
+    var slots = {};
+    SELECT_KEYS.forEach(function (key) {
+      slots[key] = data.get(key) || "";
+    });
+    TEXT_KEYS.forEach(function (key) {
+      slots[key] = (data.get(key) || "").trim();
+    });
+    slots.priorities = data.getAll("priority");
+    if (forDisplay) {
+      Object.keys(OTHER).forEach(function (key) {
+        slots[key] = resolveChoice(slots[key], slots[OTHER[key]]);
+      });
+    }
+    return slots;
   }
 
   function sentenceFromSlots(s) {
-    var line =
-      "I want a " +
-      s.piece +
-      " in " +
-      s.wood +
-      ", " +
-      s.size +
-      ", for a " +
-      s.room +
-      ". The line is " +
-      s.line +
-      ", with " +
-      s.detail +
-      " and a " +
-      s.finish +
-      " finish. Light from " +
-      s.light +
-      ".";
-    if (s.note) line += " " + s.note + ".";
-    return line;
+    var parts = [
+      "I am looking for a " + s.piece + " to use in my " + s.room + ".",
+      "Its main purpose would be " +
+        s.purpose +
+        ", and it should be about " +
+        s.length +
+        " by " +
+        s.width +
+        " by " +
+        s.height +
+        " inches.",
+      "The style I prefer is " + s.style + ", with a look that feels " + s.look + ".",
+      "I am most interested in " +
+        s.wood +
+        ", with a " +
+        s.finish +
+        " finish and a " +
+        s.sheen +
+        " sheen.",
+      "I would like it to include " +
+        s.include +
+        (s.avoid ? ", but I do not want " + s.avoid : "") +
+        ".",
+      "The piece needs to support " +
+        s.support +
+        " and will get " +
+        s.wear +
+        " use from " +
+        s.users +
+        "."
+    ];
+    if (s.reference || s.like || s.change) {
+      var ref = "The closest store-bought piece I have seen";
+      ref += s.reference ? " is " + s.reference : " is something I have in mind";
+      if (s.like) ref += "; I like " + s.like;
+      if (s.change) ref += ", but I would change " + s.change;
+      ref += ".";
+      parts.push(ref);
+    }
+    var timing =
+      "My target budget is " + s.budget + ", and I would need it " + s.when;
+    if (s.whenNote) timing += " (" + s.whenNote + ")";
+    timing += ".";
+    parts.push(timing);
+    if (s.priorities && s.priorities.length) {
+      parts.push("The most important priorities are " + joinList(s.priorities) + ".");
+    }
+    var success = "A successful piece would make me feel " + s.feel;
+    if (s.because) success += " because it would " + s.because;
+    success += ".";
+    parts.push(success);
+    if (s.links) parts.push("Inspiration: " + s.links + ".");
+    return parts.join(" ");
   }
 
   function turnstileToken() {
@@ -65,8 +156,16 @@
   }
 
   function refreshPreview() {
-    preview.textContent = sentenceFromSlots(slotsFromForm());
+    preview.textContent = sentenceFromSlots(slotsFromForm(true));
   }
+
+  form.querySelectorAll('input[name="priority"]').forEach(function (box) {
+    box.addEventListener("change", function () {
+      var checked = form.querySelectorAll('input[name="priority"]:checked');
+      if (checked.length > 3) box.checked = false;
+      refreshPreview();
+    });
+  });
 
   form.addEventListener("input", refreshPreview);
   form.addEventListener("change", refreshPreview);
@@ -80,8 +179,8 @@
 
   form.addEventListener("submit", function (event) {
     event.preventDefault();
-    var slots = slotsFromForm();
-    var sentence = sentenceFromSlots(slots);
+    var slots = slotsFromForm(false);
+    var sentence = sentenceFromSlots(slotsFromForm(true));
 
     submit.disabled = true;
     setStatus("Drawing…");

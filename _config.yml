@@ -11,6 +11,11 @@ imagine:
   api: "https://imagine.venerablegrain.com"
   turnstile_site_key: ""
 
+# Analytics & Search Console
+# GA4 Measurement ID only (not the full script). HTML-file verify: /google8fff43164876f636.html
+ga4_id: "G-9JG5H368ZE"
+google_site_verification: "164m_djTrT1Qtuo_ea-dygK8nfqQXGZmr6qfx5vPuBk"
+
 permalink: pretty
 
 include:

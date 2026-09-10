@@ -44,6 +44,37 @@ The page is live in the static site. **Generate** stays dark until the Worker is
 
 See [worker/README.md](worker/README.md) for keys, `wrangler deploy`, and attaching `imagine.venerablegrain.com`.
 
+## Analytics and indexing
+
+Use a **new** GA4 property and Search Console property for `venerablegrain.com`. Do not reuse the LLC stream; that would mix two businesses.
+
+### 1. Google Analytics 4
+
+1. Open [Google Analytics](https://analytics.google.com/) with the same Google account as the LLC.
+2. **Admin → Create → Property**: name it `Venerable Grain`, time zone and currency for the shop.
+3. **Platform: Web**. Website URL `https://venerablegrain.com`. Stream name `venerablegrain.com`.
+4. Copy the **Measurement ID** (`G-` plus letters and numbers).
+5. Paste it in `_config.yml` as `ga4_id`. Push to `main`.
+
+The tag loads only in production (`JEKYLL_ENV=production`), so local `jekyll serve` does not count as traffic. Reports appear under **Reports → Realtime** after the first live page view.
+
+### 2. Search Console (indexing)
+
+`jekyll-sitemap` already publishes [https://venerablegrain.com/sitemap.xml](https://venerablegrain.com/sitemap.xml). `robots.txt` points crawlers at it.
+
+1. Open [Google Search Console](https://search.google.com/search-console) → **Add property** → **URL prefix** → `https://venerablegrain.com`.
+2. Choose **HTML tag**. Copy only the `content="…"` value.
+3. Paste it in `_config.yml` as `google_site_verification`. Push to `main` and wait for Pages to deploy.
+4. Click **Verify**. Then **Sitemaps** → submit `sitemap.xml`.
+5. **URL inspection** → inspect `https://venerablegrain.com/` → **Request indexing**. Repeat for `/collection/` and `/contact/` if you want those crawled first.
+
+HTTPS must already work on the custom domain or verification and indexing will fail.
+
+### 3. Optional
+
+- **Bing Webmaster Tools**: add the site and import from Search Console, or paste Bing’s verification meta later.
+- **Google Business Profile**: only if this shop should show on Maps; that is separate from Analytics.
+
 ## Deploy
 
 1. Push to `main`.

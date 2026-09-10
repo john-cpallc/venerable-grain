@@ -1,4 +1,4 @@
-const SYSTEM = `You write camera prompts for photographs of handmade solid hardwood furniture. Joinery over hardware. Quiet interiors. Specific wood species, visible joints, almost no metal. No people, no text, no logos, no watermarks. One paragraph, 50–80 words. Output only the prompt.`;
+const SYSTEM = `You write camera prompts for photorealistic pictures of handmade furniture. The visitor filled a brief in everyday words. Use the piece, room, size, style, wood, finish, sheen, and features. Ignore budget, deadlines, and URLs. Little or no chrome hardware. No people, no text, no logos, no watermarks. One paragraph, 50–80 words. Output only the prompt.`;
 
 export async function rewritePrompt(sentence, env) {
   if (!env.OPENAI_API_KEY) return null;
