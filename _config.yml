@@ -8,7 +8,7 @@ email: "hello@venerablegrain.com"
 
 # Sketch tool (Cloudflare Worker). Leave api blank to hide Generate until deployed.
 imagine:
-  api: "https://imagine.venerablegrain.com"
+  api: "https://venerable-grain-imagine.vgimagine.workers.dev"
   turnstile_site_key: ""
 
 # Analytics & Search Console

@@ -22,7 +22,7 @@ npx wrangler secret put TURNSTILE_SECRET
 npx wrangler deploy
 ```
 
-The first deploy gives a `*.workers.dev` URL. Put that URL in `_config.yml` as `imagine.api` (no trailing slash) until you attach the custom host.
+The first deploy gives a `*.workers.dev` URL. This account uses `venerable-grain-imagine.vgimagine.workers.dev`. Put that URL in `_config.yml` as `imagine.api` (no trailing slash) until you attach the custom host.
 
 ## Custom host `imagine.venerablegrain.com`
 
