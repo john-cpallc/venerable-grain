@@ -10,7 +10,7 @@ script: /assets/js/imagine.js
   <header class="page__header">
     <p class="eyebrow">Sketch</p>
     <h1 class="page__title">Imagine</h1>
-    <p class="page__lede">Fill the blanks. Dropdowns where the shop has a list; type where only you know. Photos and links can go in the last line, or in an email after you generate.</p>
+    <p class="page__lede">Fill the blanks. Dropdowns where the shop has a list; type where only you know. Photos and links can go in the last line, or in an email after you generate. Successful sketches keep the filled paragraph so the shop can see what people ask for.</p>
   </header>
 
   <form class="imagine" id="imagine-form" novalidate>

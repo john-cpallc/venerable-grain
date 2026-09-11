@@ -36,3 +36,16 @@ npx wrangler dev
 ```
 
 Jekyll on `:4000` is already in `ALLOWED_ORIGINS`. Temporarily set `imagine.api` to `http://127.0.0.1:8787` while testing.
+
+## Saved briefs
+
+After a successful generate, the Worker writes a JSON file to the R2 bucket `venerable-grain-sketches`:
+
+`briefs/YYYY-MM-DD/<uuid>.json`
+
+Each file has `sentence` (the visitor paragraph), `slots`, `prompt` (what went to fal), and `at`. Browse it in the Cloudflare dashboard: **R2 → venerable-grain-sketches**. Create the bucket once:
+
+```bash
+npx wrangler r2 bucket create venerable-grain-sketches
+```
+

@@ -106,6 +106,25 @@ async function verifyTurnstile(token, ip, env) {
   if (!data.success) throw new Error("Confirm you’re a person, then generate.");
 }
 
+async function saveBrief(env, { sentence, slots, prompt }) {
+  if (!env.SKETCHES) {
+    console.warn("SKETCHES bucket not bound; brief not saved.");
+    return;
+  }
+  const at = new Date().toISOString();
+  const day = at.slice(0, 10);
+  const id = crypto.randomUUID();
+  const key = `briefs/${day}/${id}.json`;
+  const body = JSON.stringify(
+    { at, sentence, slots, prompt },
+    null,
+    2
+  );
+  await env.SKETCHES.put(key, body, {
+    httpMetadata: { contentType: "application/json" },
+  });
+}
+
 async function generateImage(prompt, env) {
   if (!env.FAL_KEY) {
     throw new DrawError("The sketch tool is not connected yet.");
@@ -183,6 +202,11 @@ export default {
       }
 
       const imageUrl = await generateImage(prompt, env);
+      try {
+        await saveBrief(env, { sentence, slots, prompt });
+      } catch (err) {
+        console.error("brief save failed", err);
+      }
       await commitUsage();
       return json({ imageUrl, sentence }, 200, origin);
     } catch (err) {
