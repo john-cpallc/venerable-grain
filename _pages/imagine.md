@@ -10,7 +10,7 @@ script: /assets/js/imagine.js
   <header class="page__header">
     <p class="eyebrow">Sketch</p>
     <h1 class="page__title">Imagine</h1>
-    <p class="page__lede">A few blanks. Generate a sketch. Add a note if you want — the shop can talk through the rest by email.</p>
+    <p class="page__lede">Say what it is, how it should look and work, and what a store version gets wrong. Everyday words are enough.</p>
   </header>
 
   <form class="imagine" id="imagine-form" novalidate>
@@ -33,6 +33,7 @@ script: /assets/js/imagine.js
           <option value="picture frame">picture frame</option>
           <option value="mirror">mirror</option>
           <option value="lamp">lamp</option>
+          <option value="cutting board">cutting board</option>
           <option value="something else">something else</option>
         </select>
       </label>
@@ -52,12 +53,33 @@ script: /assets/js/imagine.js
           <option value="office">office</option>
           <option value="entry">entry</option>
           <option value="workshop">workshop</option>
+          <option value="patio">patio</option>
           <option value="somewhere else">somewhere else</option>
         </select>
       </label>
       <label class="madlib__field madlib-other" data-other-for="room" hidden>
         <span class="visually-hidden">if somewhere else, where</span>
         <input class="madlib-blank madlib-blank--mid" type="text" name="roomOther" maxlength="40" autocomplete="off" placeholder="which room">
+      </label>.
+      It should be for
+      <label class="madlib__field">
+        <span class="visually-hidden">purpose</span>
+        <select name="purpose" required>
+          <option value="eating meals" selected>eating meals</option>
+          <option value="working">working</option>
+          <option value="sitting">sitting</option>
+          <option value="storage">storage</option>
+          <option value="display">display</option>
+          <option value="gathering">gathering</option>
+          <option value="lighting">lighting</option>
+          <option value="sleeping">sleeping</option>
+          <option value="food prep">food prep</option>
+          <option value="something else">something else</option>
+        </select>
+      </label>
+      <label class="madlib__field madlib-other" data-other-for="purpose" hidden>
+        <span class="visually-hidden">if something else, purpose</span>
+        <input class="madlib-blank madlib-blank--wide" type="text" name="purposeOther" maxlength="60" autocomplete="off" placeholder="what it should do">
       </label>,
       about
       <label class="madlib__field">
@@ -87,12 +109,26 @@ script: /assets/js/imagine.js
           <option value="industrial">industrial</option>
           <option value="traditional">traditional</option>
           <option value="minimalist" selected>minimalist</option>
+          <option value="mid-century">mid-century</option>
           <option value="something else">something else</option>
         </select>
       </label>
       <label class="madlib__field madlib-other" data-other-for="style" hidden>
         <span class="visually-hidden">if something else, style</span>
         <input class="madlib-blank madlib-blank--mid" type="text" name="styleOther" maxlength="40" autocomplete="off" placeholder="which style">
+      </label>,
+      a look that feels
+      <label class="madlib__field">
+        <span class="visually-hidden">look</span>
+        <select name="look" required>
+          <option value="simple" selected>simple</option>
+          <option value="cozy">cozy</option>
+          <option value="elegant">elegant</option>
+          <option value="clean">clean</option>
+          <option value="rugged">rugged</option>
+          <option value="organic">organic</option>
+          <option value="bold">bold</option>
+        </select>
       </label>,
       in
       <label class="madlib__field">
@@ -112,7 +148,6 @@ script: /assets/js/imagine.js
         <span class="visually-hidden">if something else, material</span>
         <input class="madlib-blank madlib-blank--mid" type="text" name="woodOther" maxlength="40" autocomplete="off" placeholder="which wood">
       </label>,
-      with a
       <label class="madlib__field">
         <span class="visually-hidden">finish</span>
         <select name="finish" required>
@@ -124,7 +159,20 @@ script: /assets/js/imagine.js
           <option value="reclaimed">reclaimed</option>
         </select>
       </label>
-      finish. Include
+      finish,
+      <label class="madlib__field">
+        <span class="visually-hidden">sheen</span>
+        <select name="sheen" required>
+          <option value="matte" selected>matte</option>
+          <option value="satin">satin</option>
+          <option value="glossy">glossy</option>
+        </select>
+      </label>
+      sheen.
+    </p>
+
+    <p class="madlib">
+      Include
       <label class="madlib__field">
         <span class="visually-hidden">features to include</span>
         <select name="include" required>
@@ -140,7 +188,49 @@ script: /assets/js/imagine.js
       </label>
       <label class="madlib__field madlib-other" data-other-for="include" hidden>
         <span class="visually-hidden">if something else, include</span>
-        <input class="madlib-blank madlib-blank--wide" type="text" name="includeOther" maxlength="80" autocomplete="off" placeholder="what to include">
+        <input class="madlib-blank madlib-blank--wide" type="text" name="includeOther" maxlength="80" autocomplete="off" placeholder="what it must have">
+      </label>.
+      I do not want
+      <label class="madlib__field">
+        <span class="visually-hidden">unwanted features</span>
+        <input class="madlib-blank madlib-blank--wide" type="text" name="avoid" maxlength="80" autocomplete="off" placeholder="optional — chrome, sharp corners">
+      </label>.
+      <span id="imagine-hold-verb">It needs to support</span>
+      <label class="madlib__field">
+        <span class="visually-hidden">what it must support</span>
+        <select name="support" required>
+          <option value="two people">two people</option>
+          <option value="a family" selected>a family</option>
+          <option value="heavy objects">heavy objects</option>
+          <option value="daily bags and keys">daily bags and keys</option>
+          <option value="a computer and papers">a computer and papers</option>
+          <option value="a picture or artwork">a picture or artwork</option>
+          <option value="a shade and bulb">a shade and bulb</option>
+          <option value="something else">something else</option>
+        </select>
+      </label>
+      <label class="madlib__field madlib-other" data-other-for="support" hidden>
+        <span class="visually-hidden">if something else, what it holds</span>
+        <input class="madlib-blank madlib-blank--wide" type="text" name="supportOther" maxlength="80" autocomplete="off" placeholder="what it holds">
+      </label>,
+      <label class="madlib__field">
+        <span class="visually-hidden">how much use</span>
+        <select name="wear" required>
+          <option value="light">light</option>
+          <option value="moderate" selected>moderate</option>
+          <option value="heavy">heavy</option>
+        </select>
+      </label>
+      use by
+      <label class="madlib__field">
+        <span class="visually-hidden">who uses it</span>
+        <select name="users" required>
+          <option value="adults" selected>adults</option>
+          <option value="children">children</option>
+          <option value="pets">pets</option>
+          <option value="customers">customers</option>
+          <option value="a mix">a mix</option>
+        </select>
       </label>.
     </p>
 
@@ -156,10 +246,48 @@ script: /assets/js/imagine.js
           <option value="not sure yet">not sure yet</option>
         </select>
       </label>.
-      Notes
+      Need it
       <label class="madlib__field">
-        <span class="visually-hidden">optional notes</span>
-        <input class="madlib-blank madlib-blank--full" type="text" name="like" maxlength="120" autocomplete="off" placeholder="optional — a link, a detail, a no">
+        <span class="visually-hidden">timeframe</span>
+        <select name="when" required>
+          <option value="with no rush" selected>with no rush</option>
+          <option value="in a few months">in a few months</option>
+          <option value="by a set date">by a set date</option>
+        </select>
+      </label>
+      <label class="madlib__field madlib-other" data-other-for="when" hidden>
+        <span class="visually-hidden">date if you have one</span>
+        <input class="madlib-blank madlib-blank--mid" type="text" name="whenNote" maxlength="40" autocomplete="off" placeholder="when">
+      </label>.
+      Closest store piece
+      <label class="madlib__field">
+        <span class="visually-hidden">reference item</span>
+        <input class="madlib-blank madlib-blank--wide" type="text" name="reference" maxlength="120" autocomplete="off" placeholder="optional — brand or link">
+      </label>.
+      I like
+      <label class="madlib__field">
+        <span class="visually-hidden">what you like about it</span>
+        <input class="madlib-blank madlib-blank--wide" type="text" name="like" maxlength="80" autocomplete="off" placeholder="optional">
+      </label>,
+      but I would change
+      <label class="madlib__field">
+        <span class="visually-hidden">what you would change</span>
+        <input class="madlib-blank madlib-blank--wide" type="text" name="change" maxlength="80" autocomplete="off" placeholder="optional">
+      </label>.
+      Most important is
+      <label class="madlib__field">
+        <span class="visually-hidden">top priority</span>
+        <select name="priority">
+          <option value="" selected>not sure yet</option>
+          <option value="appearance">appearance</option>
+          <option value="durability">durability</option>
+          <option value="function">function</option>
+          <option value="uniqueness">uniqueness</option>
+          <option value="sustainability">sustainability</option>
+          <option value="local craft">local craft</option>
+          <option value="price">price</option>
+          <option value="easy care">easy care</option>
+        </select>
       </label>.
     </p>
 

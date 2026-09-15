@@ -12,64 +12,140 @@
   var SELECT_KEYS = [
     "piece",
     "room",
+    "purpose",
     "style",
+    "look",
     "wood",
     "finish",
+    "sheen",
     "include",
-    "budget"
+    "support",
+    "wear",
+    "users",
+    "budget",
+    "when"
   ];
   var TEXT_KEYS = [
     "pieceOther",
     "roomOther",
+    "purposeOther",
     "styleOther",
     "woodOther",
     "includeOther",
+    "supportOther",
     "length",
     "width",
     "height",
-    "like"
+    "avoid",
+    "reference",
+    "like",
+    "change",
+    "whenNote"
   ];
-  var INCLUDE_BY_CLASS = {
-    table: [
-      "drawers",
-      "cable management",
-      "wood joints you can see",
-      "nothing extra",
-      "something else"
-    ],
-    seating: ["wood joints you can see", "nothing extra", "something else"],
-    storage: [
-      "drawers",
-      "shelves",
-      "storage",
-      "wood joints you can see",
-      "nothing extra",
-      "something else"
-    ],
-    bed: ["wood joints you can see", "nothing extra", "something else"],
-    wall: ["wood joints you can see", "nothing extra", "something else"],
-    lighting: [
-      "cable management",
-      "wood joints you can see",
-      "nothing extra",
-      "something else"
-    ],
-    other: [
-      "drawers",
-      "shelves",
-      "wood joints you can see",
-      "nothing extra",
-      "something else"
-    ]
+  var OPTIONS = {
+    purpose: {
+      table: ["eating meals", "working", "gathering", "display", "something else"],
+      seating: ["sitting", "gathering", "something else"],
+      storage: ["storage", "display", "something else"],
+      bed: ["sleeping", "something else"],
+      wall: ["display", "something else"],
+      lighting: ["lighting", "display", "something else"],
+      other: [
+        "food prep",
+        "display",
+        "storage",
+        "working",
+        "something else"
+      ]
+    },
+    include: {
+      table: [
+        "drawers",
+        "cable management",
+        "foldable parts",
+        "wood joints you can see",
+        "nothing extra",
+        "something else"
+      ],
+      seating: ["wood joints you can see", "nothing extra", "something else"],
+      storage: [
+        "drawers",
+        "shelves",
+        "storage",
+        "wood joints you can see",
+        "nothing extra",
+        "something else"
+      ],
+      bed: ["wood joints you can see", "nothing extra", "something else"],
+      wall: ["wood joints you can see", "nothing extra", "something else"],
+      lighting: [
+        "cable management",
+        "wood joints you can see",
+        "nothing extra",
+        "something else"
+      ],
+      other: ["nothing extra", "wood joints you can see", "something else"]
+    },
+    support: {
+      table: [
+        "two people",
+        "a family",
+        "heavy objects",
+        "daily bags and keys",
+        "a computer and papers",
+        "something else"
+      ],
+      seating: ["two people", "a family", "something else"],
+      storage: ["heavy objects", "daily bags and keys", "something else"],
+      bed: ["two people", "a family", "something else"],
+      wall: ["a picture or artwork", "something else"],
+      lighting: ["a shade and bulb", "something else"],
+      other: ["heavy objects", "something else"]
+    }
   };
-  var DIMS = {
-    table: ["72", "36", "30"],
-    seating: ["48", "16", "18"],
-    storage: ["36", "14", "72"],
-    bed: ["80", "60", "14"],
-    wall: ["36", "24", "1"],
-    lighting: ["10", "10", "22"],
-    other: ["24", "18", "18"]
+  var DEFAULTS = {
+    table: {
+      purpose: "eating meals",
+      include: "wood joints you can see",
+      support: "a family",
+      dims: ["72", "36", "30"]
+    },
+    seating: {
+      purpose: "sitting",
+      include: "wood joints you can see",
+      support: "two people",
+      dims: ["48", "16", "18"]
+    },
+    storage: {
+      purpose: "storage",
+      include: "shelves",
+      support: "heavy objects",
+      dims: ["36", "14", "72"]
+    },
+    bed: {
+      purpose: "sleeping",
+      include: "wood joints you can see",
+      support: "two people",
+      dims: ["80", "60", "14"]
+    },
+    wall: {
+      purpose: "display",
+      include: "wood joints you can see",
+      support: "a picture or artwork",
+      dims: ["36", "24", "1"]
+    },
+    lighting: {
+      purpose: "lighting",
+      include: "wood joints you can see",
+      support: "a shade and bulb",
+      dims: ["10", "10", "22"]
+    },
+    other: {
+      purpose: "food prep",
+      include: "nothing extra",
+      support: "heavy objects",
+      dims: ["18", "12", "1"]
+    }
   };
 
   try {
@@ -102,17 +178,35 @@
     return piece;
   }
 
-  function includeOptions(klass, piece) {
+  function fieldOptions(field, klass, piece) {
+    var list = (OPTIONS[field] && OPTIONS[field][klass]) || OPTIONS[field].other;
     if (piece === "desk" || /^desk\b/i.test(piece)) {
-      return [
-        "drawers",
-        "cable management",
-        "wood joints you can see",
-        "nothing extra",
-        "something else"
-      ];
+      if (field === "purpose") return ["working", "gathering", "something else"];
+      if (field === "include") {
+        return [
+          "drawers",
+          "cable management",
+          "wood joints you can see",
+          "nothing extra",
+          "something else"
+        ];
+      }
+      if (field === "support") {
+        return ["a computer and papers", "daily bags and keys", "something else"];
+      }
     }
-    return INCLUDE_BY_CLASS[klass] || INCLUDE_BY_CLASS.other;
+    if (piece === "coffee table" || piece === "side table") {
+      if (field === "purpose") return ["display", "gathering", "storage", "something else"];
+      if (field === "support") {
+        return ["daily bags and keys", "heavy objects", "something else"];
+      }
+    }
+    if (piece === "cutting board" || /\bcutting board\b/i.test(piece)) {
+      if (field === "purpose") return ["food prep", "display", "something else"];
+      if (field === "include") return ["nothing extra", "something else"];
+      if (field === "support") return ["heavy objects", "something else"];
+    }
+    return list;
   }
 
   function fillSelect(select, values, fallback) {
@@ -139,7 +233,9 @@
       var select = form.querySelector('[name="' + name + '"]');
       var show =
         select &&
-        (select.value === "something else" || select.value === "somewhere else");
+        (select.value === "something else" ||
+          select.value === "somewhere else" ||
+          (name === "when" && select.value === "by a set date"));
       wrap.hidden = !show;
     });
   }
@@ -150,20 +246,35 @@
     var piece = currentPieceName();
     var klass = pieceClass(piece);
     var kind = form.piece.value + "|" + piece + "|" + klass;
-    var dims = DIMS[klass] || DIMS.other;
-    var includeFallback = "wood joints you can see";
+    var defaults = DEFAULTS[klass] || DEFAULTS.other;
     if (piece === "desk" || /^desk\b/i.test(piece)) {
-      dims = ["60", "30", "30"];
-      includeFallback = "cable management";
+      defaults = {
+        purpose: "working",
+        include: "cable management",
+        support: "a computer and papers",
+        dims: ["60", "30", "30"]
+      };
       kind += "|desk";
     }
-    if (klass === "storage") includeFallback = "shelves";
+    if (piece === "cutting board" || /\bcutting board\b/i.test(piece)) {
+      defaults = DEFAULTS.other;
+      kind += "|board";
+    }
     if (kind !== lastKind) {
       lastKind = kind;
-      fillSelect(form.include, includeOptions(klass, piece), includeFallback);
-      form.querySelector('[name="length"]').placeholder = dims[0];
-      form.querySelector('[name="width"]').placeholder = dims[1];
-      form.querySelector('[name="height"]').placeholder = dims[2];
+      ["purpose", "include", "support"].forEach(function (field) {
+        fillSelect(form[field], fieldOptions(field, klass, piece), defaults[field]);
+      });
+      form.querySelector('[name="length"]').placeholder = defaults.dims[0];
+      form.querySelector('[name="width"]').placeholder = defaults.dims[1];
+      form.querySelector('[name="height"]').placeholder = defaults.dims[2];
+      var verb = form.querySelector("#imagine-hold-verb");
+      if (verb) {
+        verb.textContent =
+          klass === "wall" || klass === "lighting"
+            ? "It is meant to hold"
+            : "It needs to support";
+      }
     }
     toggleOthers();
   }
@@ -177,6 +288,8 @@
     TEXT_KEYS.forEach(function (key) {
       slots[key] = (data.get(key) || "").trim();
     });
+    var priority = (data.get("priority") || "").trim();
+    slots.priorities = priority ? [priority] : [];
     return slots;
   }
 

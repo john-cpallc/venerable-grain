@@ -14,6 +14,7 @@ export const SLOTS = {
     "picture frame",
     "mirror",
     "lamp",
+    "cutting board",
     "something else",
   ],
   room: [
@@ -25,6 +26,7 @@ export const SLOTS = {
     "office",
     "entry",
     "workshop",
+    "patio",
     "somewhere else",
   ],
   purpose: [
@@ -36,6 +38,7 @@ export const SLOTS = {
     "gathering",
     "lighting",
     "sleeping",
+    "food prep",
     "something else",
   ],
   style: [
@@ -45,6 +48,7 @@ export const SLOTS = {
     "industrial",
     "traditional",
     "minimalist",
+    "mid-century",
     "something else",
   ],
   look: ["simple", "cozy", "elegant", "clean", "rugged", "organic", "bold"],
@@ -175,6 +179,14 @@ const SLOT_DEFAULTS = {
 
 function inferredForPiece(piece) {
   const p = String(piece || "").toLowerCase();
+  if (p === "cutting board" || /\bcutting board\b/.test(p)) {
+    return {
+      purpose: "food prep",
+      include: "nothing extra",
+      support: "heavy objects",
+      dims: ["18", "12", "1"],
+    };
+  }
   if (p === "desk" || /^desk\b/.test(p)) {
     return {
       purpose: "working",
@@ -261,11 +273,15 @@ export function parseSlots(raw) {
     slots[selectKey] = resolveChoice(slots[selectKey], slots[otherKey]);
   }
 
-  const incoming = Array.isArray(raw.priorities)
-    ? raw.priorities.map((p) => String(p))
-    : [];
+  const incoming = [];
+  if (Array.isArray(raw.priorities)) {
+    incoming.push(...raw.priorities.map((p) => String(p)));
+  } else if (raw.priority) {
+    incoming.push(String(raw.priority));
+  }
   const unique = [];
   for (const p of incoming) {
+    if (!p) continue;
     if (!PRIORITIES.includes(p)) {
       throw new Error("Pick priorities from the list.");
     }
@@ -288,17 +304,37 @@ export function parseSlots(raw) {
 
 export function sentenceFromSlots(s) {
   const parts = [
-    `I am looking for a ${s.piece} for my ${s.room}, about ${s.length} by ${s.width} by ${s.height} inches.`,
-    `${s.style}, in ${s.wood}, with a ${s.finish} finish and a ${s.sheen} sheen.`,
+    `I am looking for a ${s.piece} for my ${s.room}, to use for ${s.purpose}, about ${s.length} by ${s.width} by ${s.height} inches.`,
+    `${s.style}, with a look that feels ${s.look}, in ${s.wood}, ${s.finish} finish, ${s.sheen} sheen.`,
   ];
   if (s.include && s.include !== "nothing extra") {
     parts.push(`Include ${s.include}.`);
   }
+  if (s.avoid) parts.push(`Do not include ${s.avoid}.`);
+  const klass = pieceClass(s.piece);
+  const hold =
+    klass === "wall" || klass === "lighting"
+      ? `Meant to hold ${s.support}`
+      : `Needs to support ${s.support}`;
+  parts.push(`${hold}, ${s.wear} use by ${s.users}.`);
   if (s.budget && s.budget !== "not sure yet") {
     parts.push(`Budget ${s.budget}.`);
   }
-  if (s.like) parts.push(`Notes: ${s.like}.`);
-  if (s.links && s.links !== s.like) parts.push(`Inspiration: ${s.links}.`);
+  let timing = `Need it ${s.when}`;
+  if (s.whenNote) timing += ` (${s.whenNote})`;
+  timing += ".";
+  parts.push(timing);
+  if (s.reference || s.like || s.change) {
+    let ref = "Closest store piece";
+    ref += s.reference ? `: ${s.reference}` : "";
+    if (s.like) ref += s.reference ? `. I like ${s.like}` : `: I like ${s.like}`;
+    if (s.change) ref += `; I would change ${s.change}`;
+    ref += ".";
+    parts.push(ref);
+  }
+  if (s.priorities.length) {
+    parts.push(`Most important: ${s.priorities[0]}.`);
+  }
   return parts.join(" ");
 }
 
@@ -437,7 +473,7 @@ export function templatePrompt(s) {
   return [
     `Photorealistic product photo of a handmade ${s.piece}, ${sizeLook(s, klass)}.`,
     `Three-quarter view, natural interior light, ${settingLook(s, klass)}.`,
-    s.look && s.look !== "simple" ? `A look that feels ${s.look}.` : "",
+    `A look that feels ${s.look}.`,
     `${cap(woodLook(s.wood))}; ${finishLook(s.finish, s.sheen)}.`,
     joineryLook(s.include, klass),
     s.avoid ? `Do not include ${s.avoid}.` : "",
