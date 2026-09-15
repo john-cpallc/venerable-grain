@@ -418,11 +418,18 @@ function sizeLook(s, klass) {
 }
 
 function settingLook(s, klass) {
+  const piece = String(s.piece || "").toLowerCase();
   if (klass === "wall") {
     return `hung or leaning in a quiet ${s.style} ${s.room}, used for ${s.purpose}, thin profile`;
   }
   if (klass === "lighting") {
     return `standing in a quiet ${s.style} ${s.room}, used for ${s.purpose}`;
+  }
+  if (piece.includes("side table") || piece.includes("end table")) {
+    return `a small occasional table beside a sofa or bed in a quiet ${s.style} ${s.room}, not a dining table, used for ${s.purpose}`;
+  }
+  if (piece.includes("coffee table")) {
+    return `a low table in front of a sofa in a quiet ${s.style} ${s.room}, used for ${s.purpose}`;
   }
   return `in a quiet ${s.style} ${s.room}, used for ${s.purpose}`;
 }

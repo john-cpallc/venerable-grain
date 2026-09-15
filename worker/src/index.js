@@ -147,6 +147,7 @@ async function generateImage(prompt, env, imageSize) {
       prompt,
       image_size: imageSize || "landscape_4_3",
       num_images: 1,
+      seed: Math.floor(Math.random() * 1_000_000_000),
       enable_safety_checker: true,
     }),
   });
