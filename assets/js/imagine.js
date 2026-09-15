@@ -2,7 +2,6 @@
   var form = document.getElementById("imagine-form");
   if (!form) return;
 
-  var preview = document.getElementById("imagine-preview");
   var statusEl = document.getElementById("imagine-status");
   var submit = document.getElementById("imagine-submit");
   var result = document.getElementById("imagine-result");
@@ -13,43 +12,64 @@
   var SELECT_KEYS = [
     "piece",
     "room",
-    "purpose",
     "style",
-    "look",
     "wood",
     "finish",
-    "sheen",
     "include",
-    "support",
-    "wear",
-    "users",
-    "budget",
-    "when",
-    "feel"
+    "budget"
   ];
   var TEXT_KEYS = [
     "pieceOther",
     "roomOther",
-    "purposeOther",
     "styleOther",
     "woodOther",
+    "includeOther",
     "length",
     "width",
     "height",
-    "avoid",
-    "reference",
-    "like",
-    "change",
-    "whenNote",
-    "because",
-    "links"
+    "like"
   ];
-  var OTHER = {
-    piece: "pieceOther",
-    room: "roomOther",
-    purpose: "purposeOther",
-    style: "styleOther",
-    wood: "woodOther"
+  var INCLUDE_BY_CLASS = {
+    table: [
+      "drawers",
+      "cable management",
+      "wood joints you can see",
+      "nothing extra",
+      "something else"
+    ],
+    seating: ["wood joints you can see", "nothing extra", "something else"],
+    storage: [
+      "drawers",
+      "shelves",
+      "storage",
+      "wood joints you can see",
+      "nothing extra",
+      "something else"
+    ],
+    bed: ["wood joints you can see", "nothing extra", "something else"],
+    wall: ["wood joints you can see", "nothing extra", "something else"],
+    lighting: [
+      "cable management",
+      "wood joints you can see",
+      "nothing extra",
+      "something else"
+    ],
+    other: [
+      "drawers",
+      "shelves",
+      "wood joints you can see",
+      "nothing extra",
+      "something else"
+    ]
+  };
+  var DIMS = {
+    table: ["72", "36", "30"],
+    seating: ["48", "16", "18"],
+    storage: ["36", "14", "72"],
+    bed: ["80", "60", "14"],
+    wall: ["36", "24", "1"],
+    lighting: ["10", "10", "22"],
+    other: ["24", "18", "18"]
   };
 
   try {
@@ -58,21 +78,97 @@
     config = {};
   }
 
-  function resolveChoice(select, other) {
-    if (select === "something else" || select === "somewhere else") {
-      return other || select;
+  function pieceClass(piece) {
+    var p = String(piece || "").toLowerCase();
+    if (/\b(picture frame|photo frame)\b/.test(p) || /\bmirror\b/.test(p)) {
+      return "wall";
     }
-    return select;
+    if (/\bframe\b/.test(p) && !/\bbed\b/.test(p)) return "wall";
+    if (/\b(lamp|sconce|pendant|lantern|lighting)\b/.test(p) || /\blight\b/.test(p)) {
+      return "lighting";
+    }
+    if (/\b(chair|bench|stool)\b/.test(p)) return "seating";
+    if (/\b(cabinet|bookshelf|bookcase|sideboard)\b/.test(p)) return "storage";
+    if (/\bbed\b/.test(p)) return "bed";
+    if (/\b(table|desk)\b/.test(p)) return "table";
+    return "other";
   }
 
-  function joinList(items) {
-    if (!items.length) return "";
-    if (items.length === 1) return items[0];
-    if (items.length === 2) return items[0] + " and " + items[1];
-    return items.slice(0, -1).join(", ") + ", and " + items[items.length - 1];
+  function currentPieceName() {
+    var piece = form.piece.value;
+    if (piece === "something else") {
+      return (form.pieceOther.value || "").trim() || piece;
+    }
+    return piece;
   }
 
-  function slotsFromForm(forDisplay) {
+  function includeOptions(klass, piece) {
+    if (piece === "desk" || /^desk\b/i.test(piece)) {
+      return [
+        "drawers",
+        "cable management",
+        "wood joints you can see",
+        "nothing extra",
+        "something else"
+      ];
+    }
+    return INCLUDE_BY_CLASS[klass] || INCLUDE_BY_CLASS.other;
+  }
+
+  function fillSelect(select, values, fallback) {
+    var current = select.value;
+    select.innerHTML = "";
+    values.forEach(function (value) {
+      var opt = document.createElement("option");
+      opt.value = value;
+      opt.textContent = value;
+      select.appendChild(opt);
+    });
+    if (values.indexOf(current) !== -1) {
+      select.value = current;
+    } else if (values.indexOf(fallback) !== -1) {
+      select.value = fallback;
+    } else {
+      select.value = values[0];
+    }
+  }
+
+  function toggleOthers() {
+    form.querySelectorAll("[data-other-for]").forEach(function (wrap) {
+      var name = wrap.getAttribute("data-other-for");
+      var select = form.querySelector('[name="' + name + '"]');
+      var show =
+        select &&
+        (select.value === "something else" || select.value === "somewhere else");
+      wrap.hidden = !show;
+    });
+  }
+
+  var lastKind = "";
+
+  function adaptForm() {
+    var piece = currentPieceName();
+    var klass = pieceClass(piece);
+    var kind = form.piece.value + "|" + piece + "|" + klass;
+    var dims = DIMS[klass] || DIMS.other;
+    var includeFallback = "wood joints you can see";
+    if (piece === "desk" || /^desk\b/i.test(piece)) {
+      dims = ["60", "30", "30"];
+      includeFallback = "cable management";
+      kind += "|desk";
+    }
+    if (klass === "storage") includeFallback = "shelves";
+    if (kind !== lastKind) {
+      lastKind = kind;
+      fillSelect(form.include, includeOptions(klass, piece), includeFallback);
+      form.querySelector('[name="length"]').placeholder = dims[0];
+      form.querySelector('[name="width"]').placeholder = dims[1];
+      form.querySelector('[name="height"]').placeholder = dims[2];
+    }
+    toggleOthers();
+  }
+
+  function slotsFromForm() {
     var data = new FormData(form);
     var slots = {};
     SELECT_KEYS.forEach(function (key) {
@@ -81,69 +177,7 @@
     TEXT_KEYS.forEach(function (key) {
       slots[key] = (data.get(key) || "").trim();
     });
-    slots.priorities = data.getAll("priority");
-    if (forDisplay) {
-      Object.keys(OTHER).forEach(function (key) {
-        slots[key] = resolveChoice(slots[key], slots[OTHER[key]]);
-      });
-    }
     return slots;
-  }
-
-  function sentenceFromSlots(s) {
-    var parts = [
-      "I am looking for a " + s.piece + " to use in my " + s.room + ".",
-      "Its main purpose would be " +
-        s.purpose +
-        ", and it should be about " +
-        s.length +
-        " by " +
-        s.width +
-        " by " +
-        s.height +
-        " inches.",
-      "The style I prefer is " + s.style + ", with a look that feels " + s.look + ".",
-      "I am most interested in " +
-        s.wood +
-        ", with a " +
-        s.finish +
-        " finish and a " +
-        s.sheen +
-        " sheen.",
-      "I would like it to include " +
-        s.include +
-        (s.avoid ? ", but I do not want " + s.avoid : "") +
-        ".",
-      "The piece needs to support " +
-        s.support +
-        " and will get " +
-        s.wear +
-        " use from " +
-        s.users +
-        "."
-    ];
-    if (s.reference || s.like || s.change) {
-      var ref = "The closest store-bought piece I have seen";
-      ref += s.reference ? " is " + s.reference : " is something I have in mind";
-      if (s.like) ref += "; I like " + s.like;
-      if (s.change) ref += ", but I would change " + s.change;
-      ref += ".";
-      parts.push(ref);
-    }
-    var timing =
-      "My target budget is " + s.budget + ", and I would need it " + s.when;
-    if (s.whenNote) timing += " (" + s.whenNote + ")";
-    timing += ".";
-    parts.push(timing);
-    if (s.priorities && s.priorities.length) {
-      parts.push("The most important priorities are " + joinList(s.priorities) + ".");
-    }
-    var success = "A successful piece would make me feel " + s.feel;
-    if (s.because) success += " because it would " + s.because;
-    success += ".";
-    parts.push(success);
-    if (s.links) parts.push("Inspiration: " + s.links + ".");
-    return parts.join(" ");
   }
 
   function turnstileToken() {
@@ -155,21 +189,9 @@
     statusEl.textContent = text || "";
   }
 
-  function refreshPreview() {
-    preview.textContent = sentenceFromSlots(slotsFromForm(true));
-  }
-
-  form.querySelectorAll('input[name="priority"]').forEach(function (box) {
-    box.addEventListener("change", function () {
-      var checked = form.querySelectorAll('input[name="priority"]:checked');
-      if (checked.length > 3) box.checked = false;
-      refreshPreview();
-    });
-  });
-
-  form.addEventListener("input", refreshPreview);
-  form.addEventListener("change", refreshPreview);
-  refreshPreview();
+  form.addEventListener("input", adaptForm);
+  form.addEventListener("change", adaptForm);
+  adaptForm();
 
   if (!config.api) {
     submit.disabled = true;
@@ -179,8 +201,7 @@
 
   form.addEventListener("submit", function (event) {
     event.preventDefault();
-    var slots = slotsFromForm(false);
-    var sentence = sentenceFromSlots(slotsFromForm(true));
+    var slots = slotsFromForm();
 
     submit.disabled = true;
     setStatus("Drawing…");
@@ -208,7 +229,7 @@
         download.href = body.imageUrl;
         var subject = encodeURIComponent("Venerable Grain sketch");
         var bodyText = encodeURIComponent(
-          "I used Imagine on the site.\n\n" + sentence + "\n"
+          "I used Imagine on the site.\n\n" + (body.sentence || "") + "\n"
         );
         emailLink.href =
           "mailto:" +

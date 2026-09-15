@@ -1,4 +1,4 @@
-import { parseSlots, sentenceFromSlots, templatePrompt } from "./slots.js";
+import { parseSlots, sentenceFromSlots, templatePrompt, imageSizeFromSlots } from "./slots.js";
 import { rewritePrompt } from "./rewrite.js";
 
 const DAILY_CAP = 200;
@@ -106,7 +106,7 @@ async function verifyTurnstile(token, ip, env) {
   if (!data.success) throw new Error("Confirm you’re a person, then generate.");
 }
 
-async function saveBrief(env, { sentence, slots, prompt }) {
+async function saveBrief(env, { sentence, slots, prompt, rewriteUsed, rewriteError }) {
   if (!env.SKETCHES) {
     console.warn("SKETCHES bucket not bound; brief not saved.");
     return;
@@ -116,7 +116,14 @@ async function saveBrief(env, { sentence, slots, prompt }) {
   const id = crypto.randomUUID();
   const key = `briefs/${day}/${id}.json`;
   const body = JSON.stringify(
-    { at, sentence, slots, prompt },
+    {
+      at,
+      sentence,
+      slots,
+      prompt,
+      rewriteUsed: Boolean(rewriteUsed),
+      ...(rewriteError ? { rewriteError } : {}),
+    },
     null,
     2
   );
@@ -125,11 +132,12 @@ async function saveBrief(env, { sentence, slots, prompt }) {
   });
 }
 
-async function generateImage(prompt, env) {
+async function generateImage(prompt, env, imageSize) {
   if (!env.FAL_KEY) {
     throw new DrawError("The sketch tool is not connected yet.");
   }
-  const res = await fetch("https://fal.run/fal-ai/flux/schnell", {
+  const model = env.FAL_MODEL || "fal-ai/flux/schnell";
+  const res = await fetch(`https://fal.run/${model}`, {
     method: "POST",
     headers: {
       Authorization: `Key ${env.FAL_KEY}`,
@@ -137,7 +145,7 @@ async function generateImage(prompt, env) {
     },
     body: JSON.stringify({
       prompt,
-      image_size: "landscape_4_3",
+      image_size: imageSize || "landscape_4_3",
       num_images: 1,
       enable_safety_checker: true,
     }),
@@ -194,16 +202,22 @@ export default {
       const commitUsage = await enforceLimits(ip, env);
 
       let prompt = templatePrompt(slots);
+      let rewriteUsed = false;
+      let rewriteError = "";
       try {
-        const rewritten = await rewritePrompt(sentence, env);
-        if (rewritten) prompt = rewritten;
+        const rewritten = await rewritePrompt(sentence, slots, env);
+        if (rewritten) {
+          prompt = rewritten;
+          rewriteUsed = true;
+        }
       } catch (err) {
+        rewriteError = String(err && err.message ? err.message : err).slice(0, 200);
         console.warn("rewrite skipped", err);
       }
 
-      const imageUrl = await generateImage(prompt, env);
+      const imageUrl = await generateImage(prompt, env, imageSizeFromSlots(slots));
       try {
-        await saveBrief(env, { sentence, slots, prompt });
+        await saveBrief(env, { sentence, slots, prompt, rewriteUsed, rewriteError });
       } catch (err) {
         console.error("brief save failed", err);
       }

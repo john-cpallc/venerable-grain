@@ -5,8 +5,10 @@ Serverless `/generate` endpoint for the Mad Libs sketch page. The Jekyll site st
 ## One-time setup
 
 1. Create a [fal.ai](https://fal.ai) account and copy an API key.
-2. Optional: an OpenAI key so the filled sentence is rewritten before FLUX. Without it, a fixed workshop template is used.
+2. Optional: an OpenAI key so the filled sentence is rewritten before FLUX. Without it, a piece-aware workshop template is used.
 3. Optional: a Cloudflare Turnstile widget. Put the site key in `_config.yml` (`imagine.turnstile_site_key`) and the secret here.
+
+Image model is `FAL_MODEL` in `wrangler.toml` (default `fal-ai/flux/schnell`). Change that var to try `fal-ai/flux/dev` later.
 
 ```bash
 cd worker
@@ -43,7 +45,7 @@ After a successful generate, the Worker writes a JSON file to the R2 bucket `ven
 
 `briefs/YYYY-MM-DD/<uuid>.json`
 
-Each file has `sentence` (the visitor paragraph), `slots`, `prompt` (what went to fal), and `at`. Browse it in the Cloudflare dashboard: **R2 → venerable-grain-sketches**. Create the bucket once:
+Each file has `sentence` (the visitor paragraph), `slots`, `prompt` (what went to fal), `rewriteUsed`, optional `rewriteError`, and `at`. Browse it in the Cloudflare dashboard: **R2 → venerable-grain-sketches**. Create the bucket once:
 
 ```bash
 npx wrangler r2 bucket create venerable-grain-sketches

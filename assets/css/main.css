@@ -702,6 +702,10 @@ h1, h2, h3 {
   outline: none;
 }
 
+.madlib-other[hidden] {
+  display: none !important;
+}
+
 .madlib-blank--dim { width: 3.2rem; }
 .madlib-blank--mid { width: 8.5rem; max-width: 100%; }
 .madlib-blank--wide { width: 14rem; max-width: 100%; }
