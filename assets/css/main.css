@@ -741,6 +741,25 @@ h1, h2, h3 {
   accent-color: var(--wood);
 }
 
+.imagine-risk {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  margin: 0 0 1.5rem;
+  max-width: var(--measure);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.imagine-risk input {
+  margin-top: 0.2rem;
+  accent-color: var(--wood);
+  flex-shrink: 0;
+}
+
 .imagine-preview {
   margin: 0 0 1.75rem;
   max-width: var(--measure);

@@ -291,6 +291,11 @@ script: /assets/js/imagine.js
       </label>.
     </p>
 
+    <label class="imagine-risk">
+      <input type="checkbox" name="unusual">
+      Take a design risk — distinctive stance, not a catalog silhouette
+    </label>
+
     {% if site.imagine.turnstile_site_key != "" %}
     <div class="cf-turnstile" data-sitekey="{{ site.imagine.turnstile_site_key }}"></div>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>

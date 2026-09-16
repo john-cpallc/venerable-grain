@@ -10,6 +10,8 @@ Serverless `/generate` endpoint for the Mad Libs sketch page. The Jekyll site st
 
 Image model is `FAL_MODEL` in `wrangler.toml` (default `fal-ai/flux/dev`). Schnell is cheaper but tends toward generic catalog forms; Pro is a later bump if sketches still look flat.
 
+The rewriter invents one structural idea, then photographs it. Cameras rotate instead of a fixed 3/4 product shot. Checking **Take a design risk** on the form (or picking uniqueness as the top priority) raises rewrite temperature and asks for a bolder, still-buildable stance.
+
 ```bash
 cd worker
 cp .dev.vars.example .dev.vars

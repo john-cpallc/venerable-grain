@@ -1,18 +1,24 @@
 import { pieceClass, templatePrompt } from "./slots.js";
 
-const SYSTEM = `You polish a workshop camera draft into one photorealistic image prompt. Keep every visual fact from the draft, especially anything marked “as written” and the shade description. Do not drop custom include/support text.
+const SYSTEM = `You write one camera prompt for a handmade piece. First invent ONE specific, buildable structural idea that matches the brief (stance, joinery, shade, or proportion) — not a store silhouette. Then photograph that idea.
 
-Lamps: open with the shade if the draft names one. Wood species, finish, and sheen apply only to the base and stem. Never describe a wooden, walnut, maple, or mushroom shade when the visitor asked for glass, fabric, paper, or metal. Stained glass / Tiffany / leaded shades need colored glass panels, visible lead came, and light through the glass. Lead came and a lamp socket are allowed. Do not write “no metal” or “no hardware” for those shades.
+Keep every visual fact from the workshop draft, especially “as written” text and the shade. Do not drop custom include/support.
 
-Office or desktop lamps sit on a desk. Wall objects hang or lean. A side table sits beside a sofa or bed, never as a dining table.
+Lamps: if a shade is named, lead with it. Wood species, finish, and sheen apply only to the base and stem. Never a wooden mushroom shade when they asked for glass, fabric, paper, or metal. Stained glass needs colored panels, lead came, and light through the glass. Socket, cord, and lead came are allowed. Do not write “no metal” for those shades.
 
-Ignore budget, deadlines, and URLs. No people, no text, no logos, no watermarks. One paragraph, 60–90 words. Output only the prompt.`;
+Use the camera hint in the draft, or pick a more interesting one. Do not default to a generic catalog three-quarter product shot.
+
+If risk is high, take a bigger formal risk (asymmetric, unexpected stance, a single bold joint) that a small hardwood shop could still make. No chrome blobs, no CNC sci-fi, no people, no text, no logos, no watermarks.
+
+Ignore budget, deadlines, and URLs. One paragraph, 70–110 words. Output only the prompt.`;
 
 export async function rewritePrompt(sentence, slots, env) {
   if (!env.OPENAI_API_KEY) return null;
 
   const klass = pieceClass(slots.piece);
   const draft = templatePrompt(slots);
+  const risky =
+    Boolean(slots.unusual) || (slots.priorities || []).includes("uniqueness");
   const brief = {
     piece: slots.piece,
     pieceClass: klass,
@@ -36,6 +42,8 @@ export async function rewritePrompt(sentence, slots, env) {
     like: slots.like,
     change: slots.change,
     priorities: slots.priorities,
+    unusual: Boolean(slots.unusual),
+    risk: risky ? "high" : "medium",
   };
 
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -46,8 +54,8 @@ export async function rewritePrompt(sentence, slots, env) {
     },
     body: JSON.stringify({
       model: env.OPENAI_MODEL || "gpt-4.1-mini",
-      temperature: 0.2,
-      max_tokens: 320,
+      temperature: risky ? 0.75 : 0.55,
+      max_tokens: 360,
       messages: [
         { role: "system", content: SYSTEM },
         {
@@ -66,5 +74,5 @@ export async function rewritePrompt(sentence, slots, env) {
   const data = await res.json();
   const content = data.choices?.[0]?.message?.content?.trim();
   if (!content) throw new Error("Rewrite returned nothing.");
-  return content.slice(0, 1200);
+  return content.slice(0, 1400);
 }

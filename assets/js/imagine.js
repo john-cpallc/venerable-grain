@@ -290,6 +290,7 @@
     });
     var priority = (data.get("priority") || "").trim();
     slots.priorities = priority ? [priority] : [];
+    slots.unusual = data.get("unusual") === "on";
     return slots;
   }
 

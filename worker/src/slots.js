@@ -299,6 +299,12 @@ export function parseSlots(raw) {
   if (!slots.length) slots.length = inferred.dims[0];
   if (!slots.width) slots.width = inferred.dims[1];
   if (!slots.height) slots.height = inferred.dims[2];
+  slots.unusual =
+    raw.unusual === true ||
+    raw.unusual === "true" ||
+    raw.unusual === "on" ||
+    raw.unusual === 1 ||
+    raw.unusual === "1";
   return slots;
 }
 
@@ -334,6 +340,9 @@ export function sentenceFromSlots(s) {
   }
   if (s.priorities.length) {
     parts.push(`Most important: ${s.priorities[0]}.`);
+  }
+  if (s.unusual) {
+    parts.push("Please take a design risk: a distinctive stance, not a catalog silhouette.");
   }
   return parts.join(" ");
 }
@@ -554,15 +563,76 @@ function lightingBodyLook(s) {
   return "A distinct wooden base and stem, with a shade attached above.";
 }
 
+function wantsRisk(s) {
+  return Boolean(s.unusual) || (s.priorities || []).includes("uniqueness");
+}
+
+function pickOne(list) {
+  return list[Math.floor(Math.random() * list.length)];
+}
+
+function cameraLook(s, klass) {
+  const risky = wantsRisk(s);
+  if (klass === "lighting") {
+    return pickOne(
+      risky
+        ? [
+            "Shade lit from within in a dim office, stem and base catching a little spill light.",
+            "Tight three-quarter on where the shade meets the stem.",
+            "Low desk-level view, the lamp as a sculptural object, not a catalog still life.",
+          ]
+        : [
+            "On a desk in daylight, shade catching the window.",
+            "Three-quarter on a desk, work surface suggested, not a windowsill.",
+          ]
+    );
+  }
+  if (klass === "wall") {
+    return pickOne(
+      risky
+        ? [
+            "Close on a corner joint, the rest of the frame falling away.",
+            "Hung slightly off-center on a quiet wall, raking light on the grain.",
+          ]
+        : [
+            "Hung on a quiet wall, natural interior light.",
+            "Leaning, three-quarter, thin profile readable.",
+          ]
+    );
+  }
+  return pickOne(
+    risky
+      ? [
+          "Low angle so the legs, stretchers, and understructure are the subject.",
+          "Close three-quarter with one through-tenon or exposed joint sharp in the foreground.",
+          "Finished prototype on a workshop bench, shavings soft in the background.",
+          "Slightly overhead, showing how the top meets the legs.",
+        ]
+      : [
+          "Three-quarter view, natural window light.",
+          "Slightly low three-quarter so the stance of the legs reads.",
+          "Quiet interior, the piece as the only subject.",
+        ]
+  );
+}
+
+function riskLook(s) {
+  if (wantsRisk(s)) {
+    return "One distinctive, buildable structural idea — not a catalog silhouette. An unexpected stance, a bold joint, or an off-center proportion is welcome if a small hardwood shop could make it.";
+  }
+  return "A considered handmade stance, not a generic store silhouette.";
+}
+
 function lightingPrompt(s) {
   const priorities = priorityLooks(s.priorities);
   const shade = shadeMaterial(s);
   const includeIsShade = shade && shade === String(s.include || "").trim();
   return [
     shadeLook(s),
-    `Photorealistic product photo of a ${s.style} ${s.piece} on a desk, ${sizeLook(s, "lighting")}.`,
-    `Three-quarter view, ${settingLook(s, "lighting")}.`,
+    `Photograph of a ${s.style} ${s.piece}, ${sizeLook(s, "lighting")}.`,
+    `${cameraLook(s, "lighting")}, ${settingLook(s, "lighting")}.`,
     `A look that feels ${s.look}.`,
+    riskLook(s),
     lightingBodyLook(s),
     `${cap(woodLook(s.wood))} on the base and stem only; ${finishLook(s.finish, s.sheen)}. Wood does not continue into the shade.`,
     asWritten(s, { skipSupport: true }),
@@ -584,9 +654,10 @@ export function templatePrompt(s) {
   const load = loadLook(s, klass);
   const priorities = priorityLooks(s.priorities);
   return [
-    `Photorealistic product photo of a handmade ${s.piece}, ${sizeLook(s, klass)}.`,
-    `Three-quarter view, natural interior light, ${settingLook(s, klass)}.`,
+    `Photograph of a handmade ${s.piece}, ${sizeLook(s, klass)}.`,
+    `${cameraLook(s, klass)}, ${settingLook(s, klass)}.`,
     `A look that feels ${s.look}.`,
+    riskLook(s),
     `${cap(woodLook(s.wood))}; ${finishLook(s.finish, s.sheen)}.`,
     joineryLook(s.include, klass),
     asWritten(s),
