@@ -38,7 +38,7 @@ The repo is set for `venerablegrain.com` (`CNAME` file, `url` / `baseurl: ""` in
 
 ## Imagine (describe → generate)
 
-`/imagine/` is a Mad Libs line. The filled sentence is sent to a Cloudflare Worker, optionally rewritten with an LLM, then drawn with FLUX schnell on fal.
+`/imagine/` is a Mad Libs line. The filled sentence is sent to a Cloudflare Worker, optionally rewritten with an LLM, then drawn with FLUX on fal.
 
 The page is live in the static site. **Generate** stays dark until the Worker is deployed and `imagine.api` in `_config.yml` matches that URL.
 
