@@ -8,7 +8,7 @@ workers_dev = true
 ALLOWED_ORIGINS = "https://venerablegrain.com,https://www.venerablegrain.com,https://john-cpallc.github.io,http://127.0.0.1:4000,http://localhost:4000"
 DAILY_BUDGET = "200"
 OPENAI_MODEL = "gpt-4.1-mini"
-FAL_MODEL = "fal-ai/flux/dev"
+FAL_MODEL = "fal-ai/flux/schnell"
 
 [[r2_buckets]]
 binding = "SKETCHES"

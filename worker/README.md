@@ -8,7 +8,7 @@ Serverless `/generate` endpoint for the Mad Libs sketch page. The Jekyll site st
 2. Optional: an OpenAI key so the filled sentence is rewritten before FLUX. Without it, a piece-aware workshop template is used.
 3. Optional: a Cloudflare Turnstile widget. Put the site key in `_config.yml` (`imagine.turnstile_site_key`) and the secret here.
 
-Image model is `FAL_MODEL` in `wrangler.toml` (default `fal-ai/flux/dev`). Schnell is cheaper but weak at following a brief; Pro is a later bump if sketches still collapse to one look.
+Image model is `FAL_MODEL` in `wrangler.toml` (default `fal-ai/flux/schnell`). The workshop prompt plus OpenAI rewrite carry the brief; bump to `fal-ai/flux/dev` only if sketches ignore it again.
 
 ```bash
 cd worker
