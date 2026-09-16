@@ -419,10 +419,18 @@ function sizeLook(s, klass) {
 
 function settingLook(s, klass) {
   const piece = String(s.piece || "").toLowerCase();
+  const purpose = String(s.purpose || "").toLowerCase();
+  const room = String(s.room || "").toLowerCase();
   if (klass === "wall") {
     return `hung or leaning in a quiet ${s.style} ${s.room}, used for ${s.purpose}, thin profile`;
   }
   if (klass === "lighting") {
+    if (
+      /desk|desktop|task|work/.test(purpose) ||
+      room === "office"
+    ) {
+      return `a task lamp on an office desk lighting the work surface, not on a windowsill`;
+    }
     return `standing in a quiet ${s.style} ${s.room}, used for ${s.purpose}`;
   }
   if (piece.includes("side table") || piece.includes("end table")) {
@@ -435,7 +443,7 @@ function settingLook(s, klass) {
 }
 
 function loadLook(s, klass) {
-  if (klass === "wall") return "";
+  if (klass === "wall" || klass === "lighting") return "";
   const cues = {
     "two people": "scaled for two people, sturdy stance",
     "a family": "family-scale, sturdy construction",
@@ -445,7 +453,7 @@ function loadLook(s, klass) {
     "a picture or artwork": "made to hold a picture or artwork",
     "a shade and bulb": "turned or faceted wood lamp with a simple shade",
   };
-  const support = cues[s.support] || "";
+  const support = cues[s.support] || (s.support ? `made to hold ${s.support}` : "");
   const wear =
     s.wear === "heavy"
       ? "robust everyday wear"
@@ -473,8 +481,90 @@ function cap(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+function asWritten(s, opts = {}) {
+  const bits = [];
+  const listed = (key) =>
+    SLOTS[key].filter((x) => x !== "something else" && x !== "somewhere else");
+  if (s.piece && !listed("piece").includes(s.piece)) {
+    bits.push(`The piece is a ${s.piece}.`);
+  }
+  if (s.purpose && !listed("purpose").includes(s.purpose)) {
+    bits.push(`Use, as written: ${s.purpose}.`);
+  }
+  if (s.style && !listed("style").includes(s.style)) {
+    bits.push(`Style, as written: ${s.style}.`);
+  }
+  if (
+    !opts.skipSupport &&
+    s.support &&
+    !listed("support").includes(s.support)
+  ) {
+    bits.push(`Holds or uses, as written: ${s.support}.`);
+  }
+  return bits.join(" ");
+}
+
+function shadeLook(s) {
+  const shade = String(s.support || "").trim();
+  const low = shade.toLowerCase();
+  if (!shade || low === "a shade and bulb") {
+    return "A separate cone, drum, or empire lampshade in paper, fabric, or glass — not a solid wood dome or mushroom cap.";
+  }
+  let extra =
+    " The wooden base and stem are separate from the shade; do not sculpt them as one piece.";
+  if (
+    low.includes("stained glass") ||
+    low.includes("tiffany") ||
+    low.includes("leaded")
+  ) {
+    extra =
+      " Colored glass in lead came, light through the glass, not a carved wooden cap.";
+  } else if (
+    low.includes("fabric") ||
+    low.includes("linen") ||
+    low.includes("paper") ||
+    low.includes("parchment")
+  ) {
+    extra = " The shade is not carved from the same wood as the stem.";
+  } else if (low.includes("metal") || low.includes("brass") || low.includes("copper")) {
+    extra = " The shade is metal, not a wooden dome.";
+  }
+  return `The shade, as written: ${shade}.${extra}`;
+}
+
+function lightingBodyLook(s) {
+  const style = String(s.style || "").toLowerCase();
+  if (style.includes("mid-century")) {
+    return "Mid-century wooden base and tapered stem or tripod: angular, elegant, useful. Not a biomorphic one-piece sculpture.";
+  }
+  return "A distinct wooden base and stem, with a shade attached above.";
+}
+
+function lightingPrompt(s) {
+  const priorities = priorityLooks(s.priorities);
+  return [
+    `Photorealistic product photo of a handmade wooden ${s.piece}, ${sizeLook(s, "lighting")}.`,
+    `Three-quarter view, ${settingLook(s, "lighting")}.`,
+    `A look that feels ${s.look}.`,
+    lightingBodyLook(s),
+    `${cap(woodLook(s.wood))} on the base and stem only; ${finishLook(s.finish, s.sheen)}.`,
+    shadeLook(s),
+    asWritten(s, { skipSupport: true }),
+    joineryLook(s.include, "lighting"),
+    s.avoid ? `Do not include ${s.avoid}.` : "",
+    s.wear === "heavy" ? "Built for daily use." : "",
+    priorities.length ? `${cap(priorities.join("; "))}.` : "",
+    s.like ? `Keep this quality: ${s.like}.` : "",
+    s.change ? `Change this vs store-bought: ${s.change}.` : "",
+    `A power cord is fine. Little or no chrome. No people, no text, no watermark, no logo.`,
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
 export function templatePrompt(s) {
   const klass = pieceClass(s.piece);
+  if (klass === "lighting") return lightingPrompt(s);
   const load = loadLook(s, klass);
   const priorities = priorityLooks(s.priorities);
   return [
@@ -483,6 +573,7 @@ export function templatePrompt(s) {
     `A look that feels ${s.look}.`,
     `${cap(woodLook(s.wood))}; ${finishLook(s.finish, s.sheen)}.`,
     joineryLook(s.include, klass),
+    asWritten(s),
     s.avoid ? `Do not include ${s.avoid}.` : "",
     load,
     priorities.length ? `${cap(priorities.join("; "))}.` : "",
