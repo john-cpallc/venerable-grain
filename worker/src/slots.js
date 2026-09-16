@@ -504,32 +504,46 @@ function asWritten(s, opts = {}) {
   return bits.join(" ");
 }
 
+function shadeMaterial(s) {
+  const include = String(s.include || "").trim();
+  const support = String(s.support || "").trim();
+  const includeIsShade =
+    include &&
+    include !== "nothing extra" &&
+    include !== "wood joints you can see" &&
+    /shade|lampshade|tiffany|stained\s*glass|leaded|mica|parchment|linen|fabric|paper|glass/i.test(
+      include
+    );
+  if (includeIsShade) return include;
+  if (support && support !== "a shade and bulb") return support;
+  return "";
+}
+
 function shadeLook(s) {
-  const shade = String(s.support || "").trim();
+  const shade = shadeMaterial(s);
   const low = shade.toLowerCase();
-  if (!shade || low === "a shade and bulb") {
+  if (!shade) {
     return "A separate cone, drum, or empire lampshade in paper, fabric, or glass — not a solid wood dome or mushroom cap.";
   }
-  let extra =
-    " The wooden base and stem are separate from the shade; do not sculpt them as one piece.";
   if (
     low.includes("stained glass") ||
     low.includes("tiffany") ||
     low.includes("leaded")
   ) {
-    extra =
-      " Colored glass in lead came, light through the glass, not a carved wooden cap.";
-  } else if (
+    return `Dominant feature: a stained-glass lampshade (${shade}) of colored glass panels in dark lead came, a bulb glowing through the glass. The shade is glass only — not walnut, not maple, not a carved wooden dome, not a mushroom cap.`;
+  }
+  if (
     low.includes("fabric") ||
     low.includes("linen") ||
     low.includes("paper") ||
     low.includes("parchment")
   ) {
-    extra = " The shade is not carved from the same wood as the stem.";
-  } else if (low.includes("metal") || low.includes("brass") || low.includes("copper")) {
-    extra = " The shade is metal, not a wooden dome.";
+    return `The shade, as written: ${shade}. Cloth or paper, not carved from the same wood as the stem.`;
   }
-  return `The shade, as written: ${shade}.${extra}`;
+  if (low.includes("metal") || low.includes("brass") || low.includes("copper")) {
+    return `The shade, as written: ${shade}. Metal, not a wooden dome.`;
+  }
+  return `The shade, as written: ${shade}. The wooden base and stem are separate from the shade; do not sculpt them as one piece.`;
 }
 
 function lightingBodyLook(s) {
@@ -542,21 +556,23 @@ function lightingBodyLook(s) {
 
 function lightingPrompt(s) {
   const priorities = priorityLooks(s.priorities);
+  const shade = shadeMaterial(s);
+  const includeIsShade = shade && shade === String(s.include || "").trim();
   return [
-    `Photorealistic product photo of a handmade wooden ${s.piece}, ${sizeLook(s, "lighting")}.`,
+    shadeLook(s),
+    `Photorealistic product photo of a ${s.style} ${s.piece} on a desk, ${sizeLook(s, "lighting")}.`,
     `Three-quarter view, ${settingLook(s, "lighting")}.`,
     `A look that feels ${s.look}.`,
     lightingBodyLook(s),
-    `${cap(woodLook(s.wood))} on the base and stem only; ${finishLook(s.finish, s.sheen)}.`,
-    shadeLook(s),
+    `${cap(woodLook(s.wood))} on the base and stem only; ${finishLook(s.finish, s.sheen)}. Wood does not continue into the shade.`,
     asWritten(s, { skipSupport: true }),
-    joineryLook(s.include, "lighting"),
+    includeIsShade ? "" : joineryLook(s.include, "lighting"),
     s.avoid ? `Do not include ${s.avoid}.` : "",
     s.wear === "heavy" ? "Built for daily use." : "",
     priorities.length ? `${cap(priorities.join("; "))}.` : "",
     s.like ? `Keep this quality: ${s.like}.` : "",
     s.change ? `Change this vs store-bought: ${s.change}.` : "",
-    `A power cord is fine. Little or no chrome. No people, no text, no watermark, no logo.`,
+    `A socket and power cord are fine. Lead came on a glass shade is fine. No chrome hardware on the wood. No people, no text, no watermark, no logo.`,
   ]
     .filter(Boolean)
     .join(" ");

@@ -1,15 +1,18 @@
-import { pieceClass } from "./slots.js";
+import { pieceClass, templatePrompt } from "./slots.js";
 
-const SYSTEM = `You write camera prompts for photorealistic pictures of handmade woodwork from a small furniture shop. The visitor filled a brief. If the visitor typed a custom phrase for the piece, use, style, include, or what it holds, copy that phrase into the prompt. Do not drop “something else” text. Lamps are a wooden base and stem plus a separate shade — never a one-piece wooden mushroom. If they named a shade material, that is the shade, not more wood. An office or desktop lamp sits on a desk as a task light, not on a windowsill. Wall objects hang or lean. A side table sits beside a sofa or bed, never as a dining table.
+const SYSTEM = `You polish a workshop camera draft into one photorealistic image prompt. Keep every visual fact from the draft, especially anything marked “as written” and the shade description. Do not drop custom include/support text.
 
-Describe wood grain, color, finish, and sheen in visual terms (for example natural plus glossy means a clear coat on natural wood, not a conflict). If they asked for visible joinery, name it: miters on frames, through-tenons or exposed mortise-and-tenon on furniture. Translate priorities into look: uniqueness → distinctive handmade details; sustainability → solid wood, honest construction, no veneer; local craft → workshop-made, not catalog furniture.
+Lamps: open with the shade if the draft names one. Wood species, finish, and sheen apply only to the base and stem. Never describe a wooden, walnut, maple, or mushroom shade when the visitor asked for glass, fabric, paper, or metal. Stained glass / Tiffany / leaded shades need colored glass panels, visible lead came, and light through the glass. Lead came and a lamp socket are allowed. Do not write “no metal” or “no hardware” for those shades.
 
-Ignore budget, deadlines, URLs, and feelings as copy. Little or no chrome hardware. No people, no text, no logos, no watermarks. One paragraph, 50–90 words. Output only the prompt.`;
+Office or desktop lamps sit on a desk. Wall objects hang or lean. A side table sits beside a sofa or bed, never as a dining table.
+
+Ignore budget, deadlines, and URLs. No people, no text, no logos, no watermarks. One paragraph, 60–90 words. Output only the prompt.`;
 
 export async function rewritePrompt(sentence, slots, env) {
   if (!env.OPENAI_API_KEY) return null;
 
   const klass = pieceClass(slots.piece);
+  const draft = templatePrompt(slots);
   const brief = {
     piece: slots.piece,
     pieceClass: klass,
@@ -43,13 +46,13 @@ export async function rewritePrompt(sentence, slots, env) {
     },
     body: JSON.stringify({
       model: env.OPENAI_MODEL || "gpt-4.1-mini",
-      temperature: 0.35,
-      max_tokens: 280,
+      temperature: 0.2,
+      max_tokens: 320,
       messages: [
         { role: "system", content: SYSTEM },
         {
           role: "user",
-          content: `Visitor description:\n"""${sentence}"""\n\nStructured slots:\n${JSON.stringify(brief)}`,
+          content: `Visitor description:\n"""${sentence}"""\n\nSlots:\n${JSON.stringify(brief)}\n\nWorkshop draft (keep these facts):\n"""${draft}"""`,
         },
       ],
     }),
