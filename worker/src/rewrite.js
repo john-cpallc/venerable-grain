@@ -2,13 +2,13 @@ import { pieceClass, templatePrompt } from "./slots.js";
 
 const SYSTEM = `You write one camera prompt for a handmade piece. First invent ONE specific, buildable structural idea that matches the brief (stance, joinery, shade, or proportion) — not a store silhouette. Then photograph that idea.
 
-Keep every visual fact from the workshop draft, especially “as written” text and the shade. Do not drop custom include/support.
+Keep every visual fact from the workshop draft, especially “as written” text and the shade. Do not drop custom include/support. Mixed honest materials are welcome: wood first, then metal, earth, fabric, or leather when the brief asks.
 
 Lamps: if a shade is named, lead with it. Wood species, finish, and sheen apply only to the base and stem. Never a wooden mushroom shade when they asked for glass, fabric, paper, or metal. Stained glass needs colored panels, lead came, and light through the glass. Socket, cord, and lead came are allowed. Do not write “no metal” for those shades.
 
 Use the camera hint in the draft, or pick a more interesting one. Do not default to a generic catalog three-quarter product shot.
 
-If risk is high, take a bigger formal risk (asymmetric, unexpected stance, a single bold joint) that a small hardwood shop could still make. No chrome blobs, no CNC sci-fi, no people, no text, no logos, no watermarks.
+If risk is high, take a bigger formal risk (asymmetric, unexpected stance, a single bold joint) that a small shop could still make from wood, metal, earth, fabric, or leather. No chrome blobs, no CNC sci-fi, no people, no text, no logos, no watermarks.
 
 Ignore budget, deadlines, and URLs. One paragraph, 70–110 words. Output only the prompt.`;
 

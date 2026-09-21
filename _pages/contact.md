@@ -13,7 +13,7 @@ description: Inquire about repair, restoration, modernization, or a commission.
   </header>
 
   <div class="prose">
-    <p>Describe the piece, the wood if you know it, and what you hope for. Photos help.</p>
+    <p>Describe the piece, the materials if you know them (wood, metal, cloth, and the rest), and what you hope for. Photos help.</p>
   </div>
 
   <div class="contact-action">

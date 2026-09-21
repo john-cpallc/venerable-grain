@@ -2,36 +2,40 @@
 layout: default
 title: Materials
 permalink: /materials/
-description: Solid hardwoods and old growth. Low glue. Low fasteners.
+description: Built to work and to move. Few cuts. Wood first — metal, earth, fabric, leather when they earn a place.
 ---
 
 <div class="page">
   <header class="page__header">
     <p class="eyebrow">Ethos</p>
     <h1 class="page__title">Materials</h1>
-    <p class="page__lede">The wood does the talking. Hardware stays quiet.</p>
+    <p class="page__lede">The material does the talking. Joints carry the load.</p>
   </header>
 
   <div class="prose">
-    <p>Only solid hardwoods and old growth. Joints carry the structure — knockdown, sashimono-inspired fitting, Shaker restraint, Danish and midcentury line.</p>
+    <p>Wood first — unmolested grain, old growth, upcycled stock. Other honest materials join when they do real work. Knockdown, sashimono-inspired fitting, Shaker restraint, Danish and midcentury line.</p>
   </div>
 
   <ul class="materials-list">
     <li>
-      <strong>Wood</strong>
-      <span>Solid hardwood and old growth only</span>
+      <strong>Strength</strong>
+      <span>Built to work. Structure you can see and trust.</span>
     </li>
     <li>
-      <strong>Joinery</strong>
-      <span>Through tenons, wedges, fitted parts — visible where it matters</span>
+      <strong>Portability</strong>
+      <span>Knockdown where it matters. A piece that cannot fit a new space waits in a garage.</span>
     </li>
     <li>
-      <strong>Glue</strong>
-      <span>Low glue; never a substitute for a good joint</span>
+      <strong>Simplicity</strong>
+      <span>Joinery over hardware. Few cuts. Grain stays readable.</span>
     </li>
     <li>
-      <strong>Fasteners</strong>
-      <span>Low fasteners; metal only when the piece asks for it</span>
+      <strong>Materials</strong>
+      <span>Unmolested and upcycled wood first. Metal, earth, fabric, leather when they earn a place — never chrome for chrome’s sake.</span>
     </li>
   </ul>
+
+  <div class="prose">
+    <p>Glue and fasteners stay low. They are never a substitute for a good joint.</p>
+  </div>
 </div>

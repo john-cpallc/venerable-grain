@@ -9,11 +9,11 @@ description: Furniture, repair, restoration, modernization, and commissions.
   <header class="page__header">
     <p class="eyebrow">Studio</p>
     <h1 class="page__title">About</h1>
-    <p class="page__lede">Furniture built to last — and older pieces brought forward with care.</p>
+    <p class="page__lede">Furniture built to work, to last, and to travel. Older pieces brought forward with care.</p>
   </header>
 
   <div class="prose about-block">
-    <p>Venerable Grain is a hobby workshop for solid hardwood furniture. Work is meant to be looked at and used for a long time.</p>
+    <p>Venerable Grain is a hobby workshop. Pieces are meant to take daily use, come apart when they need to move, and stay simple — few cuts, joinery you can see. Wood first, often upcycled; metal, earth, fabric, and leather when they earn a place.</p>
   </div>
 
   <div class="about-block">

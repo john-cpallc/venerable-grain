@@ -587,7 +587,7 @@ h1, h2, h3 {
 
 .materials-list li {
   display: grid;
-  grid-template-columns: 7rem 1fr;
+  grid-template-columns: 8.5rem 1fr;
   gap: 1rem;
   padding: 1rem 0;
   border-bottom: 1px solid var(--rule);
@@ -803,6 +803,24 @@ button.btn:disabled {
   flex-wrap: wrap;
   gap: 1.5rem;
   margin-top: 1.25rem;
+}
+
+.imagine-real {
+  margin: 2.25rem 0 0;
+  padding-top: 2.25rem;
+  border-top: 1px solid var(--rule);
+  max-width: var(--measure);
+}
+
+.imagine-real__lede {
+  margin: 0 0 1rem;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.imagine-real .madlib {
+  margin-bottom: 1.25rem;
 }
 
 /* ——— Footer ——— */

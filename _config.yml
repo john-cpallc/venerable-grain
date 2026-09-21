@@ -1,10 +1,10 @@
 title: "Venerable Grain"
-description: "Solid hardwood furniture, repair, and commissions — joinery over hardware."
+description: "Furniture built to take use and to move — few cuts, honest materials. Repair, restoration, and commissions."
 url: "https://venerablegrain.com"
 baseurl: ""
 repository: "john-cpallc/venerable-grain"
 
-email: "hello@venerablegrain.com"
+email: "macdelay@gmail.com"
 
 # Sketch tool (Cloudflare Worker). Leave api blank to hide Generate until deployed.
 imagine:

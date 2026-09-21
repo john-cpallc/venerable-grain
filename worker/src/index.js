@@ -1,4 +1,4 @@
-import { parseSlots, sentenceFromSlots, templatePrompt, imageSizeFromSlots } from "./slots.js";
+import { parseSlots, parseFollowup, sentenceFromSlots, templatePrompt, imageSizeFromSlots } from "./slots.js";
 import { rewritePrompt } from "./rewrite.js";
 
 const DAILY_CAP = 200;
@@ -109,12 +109,13 @@ async function verifyTurnstile(token, ip, env) {
 async function saveBrief(env, { sentence, slots, prompt, rewriteUsed, rewriteError }) {
   if (!env.SKETCHES) {
     console.warn("SKETCHES bucket not bound; brief not saved.");
-    return;
+    return null;
   }
   const at = new Date().toISOString();
   const day = at.slice(0, 10);
   const id = crypto.randomUUID();
-  const key = `briefs/${day}/${id}.json`;
+  const briefId = `${day}/${id}`;
+  const key = `briefs/${briefId}.json`;
   const body = JSON.stringify(
     {
       at,
@@ -128,6 +129,31 @@ async function saveBrief(env, { sentence, slots, prompt, rewriteUsed, rewriteErr
     2
   );
   await env.SKETCHES.put(key, body, {
+    httpMetadata: { contentType: "application/json" },
+  });
+  return briefId;
+}
+
+async function patchBrief(env, follow) {
+  if (!env.SKETCHES) {
+    throw new Error("The sketch tool is not connected yet.");
+  }
+  const key = `briefs/${follow.briefId}.json`;
+  const existing = await env.SKETCHES.get(key);
+  if (!existing) {
+    const err = new Error("That sketch is gone.");
+    err.status = 404;
+    throw err;
+  }
+  const brief = JSON.parse(await existing.text());
+  if (follow.place) brief.place = follow.place;
+  if (follow.when) brief.when = follow.when;
+  if (follow.whenNote) brief.whenNote = follow.whenNote;
+  if (brief.slots && typeof brief.slots === "object") {
+    if (follow.when) brief.slots.when = follow.when;
+    if (follow.whenNote) brief.slots.whenNote = follow.whenNote;
+  }
+  await env.SKETCHES.put(key, JSON.stringify(brief, null, 2), {
     httpMetadata: { contentType: "application/json" },
   });
 }
@@ -181,7 +207,7 @@ export default {
       return json({ ok: true, service: "venerable-grain-imagine" }, 200, origin || "*");
     }
 
-    if (request.method !== "POST" || url.pathname !== "/generate") {
+    if (request.method !== "POST" || (url.pathname !== "/generate" && url.pathname !== "/brief")) {
       return json({ error: "Not found." }, 404, origin || "*");
     }
 
@@ -195,8 +221,24 @@ export default {
       try {
         payload = await request.json();
       } catch {
-        throw new Error("Describe the piece using the line on the page.");
+        throw new Error(
+          url.pathname === "/brief"
+            ? "Add a place or a time."
+            : "Describe the piece using the line on the page."
+        );
       }
+
+      if (url.pathname === "/brief") {
+        const follow = parseFollowup(payload);
+        const cool = await cacheCount(`brief:${ip}`, 10);
+        if (cool.n >= 1) {
+          throw new LimitError("Give it a moment, then try again.");
+        }
+        await cool.bump();
+        await patchBrief(env, follow);
+        return json({ ok: true }, 200, origin);
+      }
+
       await verifyTurnstile(payload.turnstileToken || "", ip, env);
       const slots = parseSlots(payload.slots);
       const sentence = sentenceFromSlots(slots);
@@ -217,13 +259,14 @@ export default {
       }
 
       const imageUrl = await generateImage(prompt, env, imageSizeFromSlots(slots));
+      let briefId = null;
       try {
-        await saveBrief(env, { sentence, slots, prompt, rewriteUsed, rewriteError });
+        briefId = await saveBrief(env, { sentence, slots, prompt, rewriteUsed, rewriteError });
       } catch (err) {
         console.error("brief save failed", err);
       }
       await commitUsage();
-      return json({ imageUrl, sentence }, 200, origin);
+      return json({ imageUrl, sentence, briefId }, 200, origin);
     } catch (err) {
       const status = err.status || 400;
       const message = err.message || "The sketch did not come through.";

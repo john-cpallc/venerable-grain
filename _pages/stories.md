@@ -2,14 +2,14 @@
 layout: default
 title: Stories
 permalink: /stories/
-description: Process stories — joinery, repair, and the path from timber to piece.
+description: Process stories — few joints, honest stock, and how an old piece finds a second life.
 ---
 
 <div class="page">
   <header class="page__header">
     <p class="eyebrow">Process</p>
     <h1 class="page__title">Stories</h1>
-    <p class="page__lede">How a piece comes together — and how an old one finds a second life.</p>
+    <p class="page__lede">How a piece comes together with few joints — and how an old one finds a second life.</p>
   </header>
 
   <ul class="story-list">

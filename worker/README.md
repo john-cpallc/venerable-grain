@@ -47,7 +47,7 @@ After a successful generate, the Worker writes a JSON file to the R2 bucket `ven
 
 `briefs/YYYY-MM-DD/<uuid>.json`
 
-Each file has `sentence` (the visitor paragraph), `slots`, `prompt` (what went to fal), `rewriteUsed`, optional `rewriteError`, and `at`. Browse it in the Cloudflare dashboard: **R2 → venerable-grain-sketches**. Create the bucket once:
+Each file has `sentence` (the visitor paragraph), `slots`, `prompt` (what went to fal), `rewriteUsed`, optional `rewriteError`, and `at`. After a sketch, the page can POST `/brief` with `{ briefId, place, when, whenNote }` to add optional geography and timing onto that same object. `briefId` is `YYYY-MM-DD/<uuid>`. Browse files in the Cloudflare dashboard: **R2 → venerable-grain-sketches**. Create the bucket once:
 
 ```bash
 npx wrangler r2 bucket create venerable-grain-sketches

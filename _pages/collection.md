@@ -2,14 +2,14 @@
 layout: default
 title: Collection
 permalink: /collection/
-description: Furniture in solid hardwood — new work, repair, and modernization.
+description: Work meant to be used and moved — new furniture, repair, and modernization.
 ---
 
 <div class="page">
   <header class="page__header">
     <p class="eyebrow">Work</p>
     <h1 class="page__title">Collection</h1>
-    <p class="page__lede">Finished pieces. Repair and modernization sit beside new work.</p>
+    <p class="page__lede">Work meant to be used and moved. New pieces sit beside repair and modernization.</p>
   </header>
 
   <ul class="gallery">

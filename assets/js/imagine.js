@@ -8,6 +8,9 @@
   var image = document.getElementById("imagine-image");
   var download = document.getElementById("imagine-download");
   var emailLink = document.getElementById("imagine-email");
+  var realForm = document.getElementById("imagine-real");
+  var realStatusEl = document.getElementById("imagine-real-status");
+  var realSubmit = document.getElementById("imagine-real-submit");
   var config = {};
   var SELECT_KEYS = [
     "piece",
@@ -63,28 +66,56 @@
         "drawers",
         "cable management",
         "foldable parts",
+        "knockdown joinery",
+        "few visible joints",
         "wood joints you can see",
         "nothing extra",
         "something else"
       ],
-      seating: ["wood joints you can see", "nothing extra", "something else"],
+      seating: [
+        "knockdown joinery",
+        "few visible joints",
+        "wood joints you can see",
+        "nothing extra",
+        "something else"
+      ],
       storage: [
         "drawers",
         "shelves",
         "storage",
+        "knockdown joinery",
+        "few visible joints",
         "wood joints you can see",
         "nothing extra",
         "something else"
       ],
-      bed: ["wood joints you can see", "nothing extra", "something else"],
-      wall: ["wood joints you can see", "nothing extra", "something else"],
+      bed: [
+        "knockdown joinery",
+        "few visible joints",
+        "wood joints you can see",
+        "nothing extra",
+        "something else"
+      ],
+      wall: [
+        "few visible joints",
+        "wood joints you can see",
+        "nothing extra",
+        "something else"
+      ],
       lighting: [
         "cable management",
+        "few visible joints",
         "wood joints you can see",
         "nothing extra",
         "something else"
       ],
-      other: ["nothing extra", "wood joints you can see", "something else"]
+      other: [
+        "nothing extra",
+        "knockdown joinery",
+        "few visible joints",
+        "wood joints you can see",
+        "something else"
+      ]
     },
     support: {
       table: [
@@ -186,6 +217,8 @@
         return [
           "drawers",
           "cable management",
+          "knockdown joinery",
+          "few visible joints",
           "wood joints you can see",
           "nothing extra",
           "something else"
@@ -234,13 +267,21 @@
       var show =
         select &&
         (select.value === "something else" ||
-          select.value === "somewhere else" ||
-          (name === "when" && select.value === "by a set date"));
+          select.value === "somewhere else");
       wrap.hidden = !show;
     });
+    if (realForm) {
+      var whenWrap = realForm.querySelector('[data-other-for="when"]');
+      var whenSelect = realForm.querySelector('[name="when"]');
+      if (whenWrap && whenSelect) {
+        whenWrap.hidden = whenSelect.value !== "by a set date";
+      }
+    }
   }
 
   var lastKind = "";
+  var lastSentence = "";
+  var lastBriefId = "";
 
   function adaptForm() {
     var piece = currentPieceName();
@@ -303,6 +344,48 @@
     statusEl.textContent = text || "";
   }
 
+  function setRealStatus(text) {
+    if (realStatusEl) realStatusEl.textContent = text || "";
+  }
+
+  function realDetails() {
+    if (!realForm) return { place: "", when: "", whenNote: "" };
+    var when = (realForm.when && realForm.when.value) || "";
+    var whenNote = (realForm.whenNote && realForm.whenNote.value.trim()) || "";
+    return {
+      place: (realForm.place && realForm.place.value.trim()) || "",
+      when: when,
+      whenNote: when === "by a set date" ? whenNote : ""
+    };
+  }
+
+  function updateMailto() {
+    var extra = [];
+    var details = realDetails();
+    if (details.place) extra.push("It would be in " + details.place + ".");
+    if (details.when) {
+      extra.push(
+        "Wanted " +
+          details.when +
+          (details.whenNote ? " (" + details.whenNote + ")" : "") +
+          "."
+      );
+    }
+    var bodyText = encodeURIComponent(
+      "I used Imagine on the site.\n\n" +
+        (lastSentence || "") +
+        (extra.length ? "\n\n" + extra.join(" ") : "") +
+        "\n"
+    );
+    emailLink.href =
+      "mailto:" +
+      (config.email || "") +
+      "?subject=" +
+      encodeURIComponent("Venerable Grain sketch") +
+      "&body=" +
+      bodyText;
+  }
+
   form.addEventListener("input", adaptForm);
   form.addEventListener("change", adaptForm);
   adaptForm();
@@ -320,6 +403,7 @@
     submit.disabled = true;
     setStatus("Drawing…");
     result.hidden = true;
+    if (realForm) realForm.hidden = true;
 
     fetch(config.api.replace(/\/$/, "") + "/generate", {
       method: "POST",
@@ -341,17 +425,15 @@
         if (!body.imageUrl) throw new Error("The sketch did not come through.");
         image.src = body.imageUrl;
         download.href = body.imageUrl;
-        var subject = encodeURIComponent("Venerable Grain sketch");
-        var bodyText = encodeURIComponent(
-          "I used Imagine on the site.\n\n" + (body.sentence || "") + "\n"
-        );
-        emailLink.href =
-          "mailto:" +
-          (config.email || "") +
-          "?subject=" +
-          subject +
-          "&body=" +
-          bodyText;
+        lastSentence = body.sentence || "";
+        lastBriefId = body.briefId || "";
+        if (realForm) {
+          realForm.reset();
+          realForm.hidden = false;
+          setRealStatus("");
+          toggleOthers();
+        }
+        updateMailto();
         result.hidden = false;
         setStatus("");
       })
@@ -366,4 +448,62 @@
         submit.disabled = false;
       });
   });
+
+  if (realForm) {
+    realForm.addEventListener("input", function () {
+      toggleOthers();
+      updateMailto();
+    });
+    realForm.addEventListener("change", function () {
+      toggleOthers();
+      updateMailto();
+    });
+    realForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var details = realDetails();
+      if (!details.place && !details.when && !details.whenNote) {
+        setRealStatus("Add a place or a time.");
+        return;
+      }
+      if (!lastBriefId) {
+        updateMailto();
+        setRealStatus("Added to the note you can send.");
+        return;
+      }
+      realSubmit.disabled = true;
+      setRealStatus("Saving…");
+      fetch(config.api.replace(/\/$/, "") + "/brief", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          briefId: lastBriefId,
+          place: details.place,
+          when: details.when,
+          whenNote: details.whenNote
+        })
+      })
+        .then(function (res) {
+          return res.json().then(function (body) {
+            if (!res.ok) {
+              throw new Error(body.error || "Could not add that.");
+            }
+            return body;
+          });
+        })
+        .then(function () {
+          updateMailto();
+          setRealStatus("Added.");
+        })
+        .catch(function (err) {
+          var msg = err.message || "Could not add that.";
+          if (err.name === "TypeError" || msg === "Failed to fetch") {
+            msg = "Could not add that.";
+          }
+          setRealStatus(msg);
+        })
+        .then(function () {
+          realSubmit.disabled = false;
+        });
+    });
+  }
 })();

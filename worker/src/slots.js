@@ -59,6 +59,11 @@ export const SLOTS = {
     "maple",
     "ash",
     "pine",
+    "reclaimed wood",
+    "metal",
+    "stone",
+    "fabric",
+    "leather",
     "I’m not sure",
     "something else",
   ],
@@ -70,6 +75,8 @@ export const SLOTS = {
     "storage",
     "cable management",
     "foldable parts",
+    "knockdown joinery",
+    "few visible joints",
     "wood joints you can see",
     "nothing extra",
     "something else",
@@ -138,6 +145,7 @@ const TEXTS = {
   like: { max: 120, re: LINK, optional: true },
   change: { max: 80, re: WORD, optional: true },
   whenNote: { max: 40, re: WORD, optional: true },
+  place: { max: 40, re: WORD, optional: true },
   because: { max: 100, re: WORD, optional: true },
   links: { max: 200, re: LINK, optional: true },
 };
@@ -173,7 +181,6 @@ const SLOT_DEFAULTS = {
   wear: "moderate",
   users: "adults",
   budget: "not sure yet",
-  when: "with no rush",
   feel: "at ease",
 };
 
@@ -258,7 +265,13 @@ export function parseSlots(raw) {
   const slots = {};
   for (const key of Object.keys(SLOTS)) {
     let value = String(raw[key] || "").trim();
-    if (!value) value = SLOT_DEFAULTS[key] || "";
+    if (!value) {
+      if (key === "when") {
+        slots[key] = "";
+        continue;
+      }
+      value = SLOT_DEFAULTS[key] || "";
+    }
     if (!SLOTS[key].includes(value)) {
       throw new Error("That line is not one of the shop’s options.");
     }
@@ -308,6 +321,28 @@ export function parseSlots(raw) {
   return slots;
 }
 
+const BRIEF_ID = /^\d{4}-\d{2}-\d{2}\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+export function parseFollowup(raw) {
+  if (!raw || typeof raw !== "object") {
+    throw new Error("Add a place or a time.");
+  }
+  const briefId = String(raw.briefId || "").trim();
+  if (!BRIEF_ID.test(briefId)) {
+    throw new Error("That sketch is gone.");
+  }
+  const place = cleanText(raw.place, TEXTS.place);
+  let when = String(raw.when || "").trim();
+  if (when && !SLOTS.when.includes(when)) {
+    throw new Error("That line is not one of the shop’s options.");
+  }
+  const whenNote = cleanText(raw.whenNote, TEXTS.whenNote);
+  if (!place && !when && !whenNote) {
+    throw new Error("Add a place or a time.");
+  }
+  return { briefId, place, when, whenNote };
+}
+
 export function sentenceFromSlots(s) {
   const parts = [
     `I am looking for a ${s.piece} for my ${s.room}, to use for ${s.purpose}, about ${s.length} by ${s.width} by ${s.height} inches.`,
@@ -324,12 +359,14 @@ export function sentenceFromSlots(s) {
       : `Needs to support ${s.support}`;
   parts.push(`${hold}, ${s.wear} use by ${s.users}.`);
   if (s.budget && s.budget !== "not sure yet") {
-    parts.push(`Budget ${s.budget}.`);
+    parts.push(`A realistic range: ${s.budget}.`);
   }
-  let timing = `Need it ${s.when}`;
-  if (s.whenNote) timing += ` (${s.whenNote})`;
-  timing += ".";
-  parts.push(timing);
+  if (s.when) {
+    let timing = `Need it ${s.when}`;
+    if (s.whenNote) timing += ` (${s.whenNote})`;
+    timing += ".";
+    parts.push(timing);
+  }
   if (s.reference || s.like || s.change) {
     let ref = "Closest store piece";
     ref += s.reference ? `: ${s.reference}` : "";
@@ -375,7 +412,7 @@ export function imageSizeFromSlots(s) {
 function woodLook(wood) {
   const key = String(wood || "").toLowerCase();
   if (wood === "I’m not sure") {
-    return "solid hardwood with honest, visible grain";
+    return "honest natural materials, wood first, grain or texture left readable";
   }
   const looks = {
     pine: "light honey pine with visible grain and possible knots",
@@ -384,11 +421,21 @@ function woodLook(wood) {
     cherry: "warm reddish cherry",
     maple: "pale even maple",
     ash: "light ash with bold grain",
+    "reclaimed wood": "upcycled or reclaimed timber, marks of a former life left readable",
+    metal: "honest metal — steel, iron, or brass as structure, not chrome",
+    stone: "stone, clay, or earth as a working surface or weight",
+    fabric: "natural fabric — linen, canvas, or wool — as upholstery, strap, or panel",
+    leather: "leather as strap, seat, or wrap, left close to how it arrived",
   };
   return looks[key] || `solid ${wood} with honest grain`;
 }
 
-function finishLook(finish, sheen) {
+function isNonWood(wood) {
+  const key = String(wood || "").toLowerCase();
+  return key === "metal" || key === "stone" || key === "fabric" || key === "leather";
+}
+
+function finishLook(finish, sheen, wood) {
   const sheenTxt =
     sheen === "matte"
       ? "matte sheen"
@@ -397,6 +444,16 @@ function finishLook(finish, sheen) {
         : sheen === "glossy"
           ? "glossy sheen"
           : `${sheen} sheen`;
+  if (isNonWood(wood)) {
+    if (finish === "natural") {
+      return `left close to the material’s own color, ${sheenTxt}`;
+    }
+    if (finish === "painted") return `painted or coated finish, ${sheenTxt}`;
+    if (finish === "reclaimed") {
+      return `weathered character under a ${sheenTxt}`;
+    }
+    return `${finish} tone, ${sheenTxt}`;
+  }
   if (finish === "natural") {
     return `clear coat showing the natural wood color, ${sheenTxt}`;
   }
@@ -409,6 +466,12 @@ function finishLook(finish, sheen) {
 
 function joineryLook(include, klass) {
   if (!include || include === "nothing extra") return "";
+  if (include === "knockdown joinery") {
+    return "Knockdown construction: the piece comes apart cleanly for a move.";
+  }
+  if (include === "few visible joints") {
+    return "Spare joinery — few cuts, joints visible where they work.";
+  }
   if (include === "wood joints you can see") {
     return klass === "wall"
       ? "Visible mitered or through-joinery at the corners."
@@ -475,7 +538,7 @@ function loadLook(s, klass) {
 function priorityLooks(priorities) {
   const map = {
     uniqueness: "distinctive handmade details",
-    sustainability: "solid wood, honest construction, no veneer",
+    sustainability: "honest construction, upcycled or unmolested stock, no veneer",
     "local craft": "workshop-made, not catalog furniture",
     appearance: "careful proportions",
     durability: "lasting, robust construction",
@@ -520,6 +583,8 @@ function shadeMaterial(s) {
     include &&
     include !== "nothing extra" &&
     include !== "wood joints you can see" &&
+    include !== "knockdown joinery" &&
+    include !== "few visible joints" &&
     /shade|lampshade|tiffany|stained\s*glass|leaded|mica|parchment|linen|fabric|paper|glass/i.test(
       include
     );
@@ -618,7 +683,7 @@ function cameraLook(s, klass) {
 
 function riskLook(s) {
   if (wantsRisk(s)) {
-    return "One distinctive, buildable structural idea — not a catalog silhouette. An unexpected stance, a bold joint, or an off-center proportion is welcome if a small hardwood shop could make it.";
+    return "One distinctive, buildable structural idea — not a catalog silhouette. An unexpected stance, a bold joint, or an off-center proportion is welcome if a small shop could make it from wood, metal, earth, fabric, or leather.";
   }
   return "A considered handmade stance, not a generic store silhouette.";
 }
@@ -634,7 +699,7 @@ function lightingPrompt(s) {
     `A look that feels ${s.look}.`,
     riskLook(s),
     lightingBodyLook(s),
-    `${cap(woodLook(s.wood))} on the base and stem only; ${finishLook(s.finish, s.sheen)}. Wood does not continue into the shade.`,
+    `${cap(woodLook(s.wood))} on the base and stem only; ${finishLook(s.finish, s.sheen, s.wood)}. That material does not continue into the shade.`,
     asWritten(s, { skipSupport: true }),
     includeIsShade ? "" : joineryLook(s.include, "lighting"),
     s.avoid ? `Do not include ${s.avoid}.` : "",
@@ -658,7 +723,7 @@ export function templatePrompt(s) {
     `${cameraLook(s, klass)}, ${settingLook(s, klass)}.`,
     `A look that feels ${s.look}.`,
     riskLook(s),
-    `${cap(woodLook(s.wood))}; ${finishLook(s.finish, s.sheen)}.`,
+    `${cap(woodLook(s.wood))}; ${finishLook(s.finish, s.sheen, s.wood)}.`,
     joineryLook(s.include, klass),
     asWritten(s),
     s.avoid ? `Do not include ${s.avoid}.` : "",
@@ -666,7 +731,7 @@ export function templatePrompt(s) {
     priorities.length ? `${cap(priorities.join("; "))}.` : "",
     s.like ? `Keep this quality: ${s.like}.` : "",
     s.change ? `Change this vs store-bought: ${s.change}.` : "",
-    `Joinery over hardware, little or no chrome, no people, no text, no watermark, no logo.`,
+    `Joinery over hardware, mixed honest materials welcome, little or no chrome, no people, no text, no watermark, no logo.`,
   ]
     .filter(Boolean)
     .join(" ");

@@ -6,4 +6,4 @@ order: 4
 image: /assets/images/pieces/placeholder-cabinet.svg
 ---
 
-A small cabinet with knockdown joinery — wedged through-tenons and fitted shelves. Meant to come apart cleanly if it ever needs to move.
+A small cabinet with knockdown joinery — wedged through-tenons and fitted shelves. It comes apart cleanly when it needs to move, and goes back together without fuss.

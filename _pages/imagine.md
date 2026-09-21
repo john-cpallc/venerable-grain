@@ -140,13 +140,18 @@ script: /assets/js/imagine.js
           <option value="maple">maple</option>
           <option value="ash">ash</option>
           <option value="pine">pine</option>
+          <option value="reclaimed wood">reclaimed wood</option>
+          <option value="metal">metal</option>
+          <option value="stone">stone</option>
+          <option value="fabric">fabric</option>
+          <option value="leather">leather</option>
           <option value="I’m not sure">I’m not sure</option>
           <option value="something else">something else</option>
         </select>
       </label>
       <label class="madlib__field madlib-other" data-other-for="wood" hidden>
         <span class="visually-hidden">if something else, material</span>
-        <input class="madlib-blank madlib-blank--mid" type="text" name="woodOther" maxlength="40" autocomplete="off" placeholder="which wood">
+        <input class="madlib-blank madlib-blank--mid" type="text" name="woodOther" maxlength="40" autocomplete="off" placeholder="which material">
       </label>,
       <label class="madlib__field">
         <span class="visually-hidden">finish</span>
@@ -181,6 +186,8 @@ script: /assets/js/imagine.js
           <option value="storage">storage</option>
           <option value="cable management">cable management</option>
           <option value="foldable parts">foldable parts</option>
+          <option value="knockdown joinery">knockdown joinery</option>
+          <option value="few visible joints">few visible joints</option>
           <option value="wood joints you can see" selected>wood joints you can see</option>
           <option value="nothing extra">nothing extra</option>
           <option value="something else">something else</option>
@@ -235,29 +242,16 @@ script: /assets/js/imagine.js
     </p>
 
     <p class="madlib">
-      Budget
+      A realistic range for this would be
       <label class="madlib__field">
         <span class="visually-hidden">budget</span>
         <select name="budget" required>
+          <option value="not sure yet" selected>not sure yet</option>
           <option value="under $800">under $800</option>
-          <option value="$800–2,000" selected>$800–2,000</option>
+          <option value="$800–2,000">$800–2,000</option>
           <option value="$2,000–5,000">$2,000–5,000</option>
           <option value="$5,000 or more">$5,000 or more</option>
-          <option value="not sure yet">not sure yet</option>
         </select>
-      </label>.
-      Need it
-      <label class="madlib__field">
-        <span class="visually-hidden">timeframe</span>
-        <select name="when" required>
-          <option value="with no rush" selected>with no rush</option>
-          <option value="in a few months">in a few months</option>
-          <option value="by a set date">by a set date</option>
-        </select>
-      </label>
-      <label class="madlib__field madlib-other" data-other-for="when" hidden>
-        <span class="visually-hidden">date if you have one</span>
-        <input class="madlib-blank madlib-blank--mid" type="text" name="whenNote" maxlength="40" autocomplete="off" placeholder="when">
       </label>.
       Closest store piece
       <label class="madlib__field">
@@ -314,6 +308,35 @@ script: /assets/js/imagine.js
       <a class="btn" id="imagine-email" href="mailto:{{ site.email }}">Email this sketch</a>
     </figcaption>
   </figure>
+
+  <form class="imagine-real" id="imagine-real" hidden>
+    <p class="imagine-real__lede">If this lived in a real room</p>
+    <p class="madlib">
+      It would be in
+      <label class="madlib__field">
+        <span class="visually-hidden">city or ZIP</span>
+        <input class="madlib-blank madlib-blank--mid" type="text" name="place" maxlength="40" autocomplete="off" placeholder="city or ZIP">
+      </label>.
+      Wanted
+      <label class="madlib__field">
+        <span class="visually-hidden">timeframe</span>
+        <select name="when">
+          <option value="" selected>whenever</option>
+          <option value="with no rush">with no rush</option>
+          <option value="in a few months">in a few months</option>
+          <option value="by a set date">by a set date</option>
+        </select>
+      </label>
+      <label class="madlib__field madlib-other" data-other-for="when" hidden>
+        <span class="visually-hidden">date if you have one</span>
+        <input class="madlib-blank madlib-blank--mid" type="text" name="whenNote" maxlength="40" autocomplete="off" placeholder="when">
+      </label>.
+    </p>
+    <div class="imagine-actions">
+      <button class="btn" type="submit" id="imagine-real-submit">Add this</button>
+    </div>
+    <p class="imagine-status" id="imagine-real-status" role="status"></p>
+  </form>
 </div>
 
 <script type="application/json" id="imagine-config">
