@@ -257,6 +257,41 @@ function inferredForPiece(piece) {
   return byClass[pieceClass(piece)] || byClass.other;
 }
 
+export function shopDefaultPath(s) {
+  const wood = String(s.wood || "");
+  const woodOk = wood === "walnut" || wood === "I’m not sure";
+  const inferred = inferredForPiece(s.piece);
+  const includeOk =
+    s.include === inferred.include || s.include === "wood joints you can see";
+  return (
+    s.style === "minimalist" &&
+    s.look === "simple" &&
+    woodOk &&
+    s.finish === "natural" &&
+    s.sheen === "matte" &&
+    includeOk
+  );
+}
+
+function shopVisionLook(s) {
+  if (!shopDefaultPath(s)) return "";
+  const klass = pieceClass(s.piece);
+  const portable =
+    klass === "table" ||
+    klass === "seating" ||
+    klass === "storage" ||
+    klass === "bed";
+  const move = portable
+    ? "Knockdown or few large parts so it can move."
+    : "Do not add knockdown construction; this piece is not meant to travel as furniture.";
+  return [
+    "Workshop stance: built to work and take daily use; structure you can see.",
+    move,
+    "Few cuts, joinery over hardware, grain left readable.",
+    "Unmolested or upcycled wood. Metal, earth, fabric, or leather only if the brief named them. No chrome, no veneer, no catalog gloss.",
+  ].join(" ");
+}
+
 export function parseSlots(raw) {
   if (!raw || typeof raw !== "object") {
     throw new Error("Describe the piece using the line on the page.");
@@ -707,6 +742,7 @@ function lightingPrompt(s) {
     priorities.length ? `${cap(priorities.join("; "))}.` : "",
     s.like ? `Keep this quality: ${s.like}.` : "",
     s.change ? `Change this vs store-bought: ${s.change}.` : "",
+    shopVisionLook(s),
     `A socket and power cord are fine. Lead came on a glass shade is fine. No chrome hardware on the wood. No people, no text, no watermark, no logo.`,
   ]
     .filter(Boolean)
@@ -731,6 +767,7 @@ export function templatePrompt(s) {
     priorities.length ? `${cap(priorities.join("; "))}.` : "",
     s.like ? `Keep this quality: ${s.like}.` : "",
     s.change ? `Change this vs store-bought: ${s.change}.` : "",
+    shopVisionLook(s),
     `Joinery over hardware, mixed honest materials welcome, little or no chrome, no people, no text, no watermark, no logo.`,
   ]
     .filter(Boolean)

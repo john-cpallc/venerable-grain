@@ -1,6 +1,6 @@
-import { pieceClass, templatePrompt } from "./slots.js";
+import { pieceClass, shopDefaultPath, templatePrompt } from "./slots.js";
 
-const SYSTEM = `You write one camera prompt for a handmade piece. First invent ONE specific, buildable structural idea that matches the brief (stance, joinery, shade, or proportion) — not a store silhouette. Then photograph that idea.
+const SYSTEM_BASE = `You write one camera prompt for a handmade piece. First invent ONE specific, buildable structural idea that matches the brief (stance, joinery, shade, or proportion) — not a store silhouette. Then photograph that idea.
 
 Keep every visual fact from the workshop draft, especially “as written” text and the shade. Do not drop custom include/support. Mixed honest materials are welcome: wood first, then metal, earth, fabric, or leather when the brief asks.
 
@@ -12,10 +12,19 @@ If risk is high, take a bigger formal risk (asymmetric, unexpected stance, a sin
 
 Ignore budget, deadlines, and URLs. One paragraph, 70–110 words. Output only the prompt.`;
 
+const SYSTEM_SHOP = `${SYSTEM_BASE}
+
+This visitor left the shop’s landing defaults. The idea must match the shop: built for daily use, structure you can see, few cuts, joinery over hardware, unmolested or upcycled wood. For tables, seating, storage, and beds, prefer knockdown or few large parts so it can move. Do not add knockdown to lamps, frames, or boards. No glossy catalog furniture, no veneer, no chrome.`;
+
+const SYSTEM_VISITOR = `${SYSTEM_BASE}
+
+Follow the visitor’s style, look, material, finish, sheen, and include exactly. Do not correct them toward Shaker oak or a default walnut table.`;
+
 export async function rewritePrompt(sentence, slots, env) {
   if (!env.OPENAI_API_KEY) return null;
 
   const klass = pieceClass(slots.piece);
+  const shopDefault = shopDefaultPath(slots);
   const draft = templatePrompt(slots);
   const risky =
     Boolean(slots.unusual) || (slots.priorities || []).includes("uniqueness");
@@ -44,6 +53,7 @@ export async function rewritePrompt(sentence, slots, env) {
     priorities: slots.priorities,
     unusual: Boolean(slots.unusual),
     risk: risky ? "high" : "medium",
+    shopDefault,
   };
 
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -57,7 +67,7 @@ export async function rewritePrompt(sentence, slots, env) {
       temperature: risky ? 0.75 : 0.55,
       max_tokens: 360,
       messages: [
-        { role: "system", content: SYSTEM },
+        { role: "system", content: shopDefault ? SYSTEM_SHOP : SYSTEM_VISITOR },
         {
           role: "user",
           content: `Visitor description:\n"""${sentence}"""\n\nSlots:\n${JSON.stringify(brief)}\n\nWorkshop draft (keep these facts):\n"""${draft}"""`,
