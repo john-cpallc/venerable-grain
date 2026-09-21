@@ -810,6 +810,7 @@ button.btn:disabled {
   padding-top: 2.25rem;
   border-top: 1px solid var(--rule);
   max-width: var(--measure);
+  display: block;
 }
 
 .imagine-real__lede {

@@ -403,7 +403,6 @@
     submit.disabled = true;
     setStatus("Drawing…");
     result.hidden = true;
-    if (realForm) realForm.hidden = true;
 
     fetch(config.api.replace(/\/$/, "") + "/generate", {
       method: "POST",
@@ -429,7 +428,6 @@
         lastBriefId = body.briefId || "";
         if (realForm) {
           realForm.reset();
-          realForm.hidden = false;
           setRealStatus("");
           toggleOthers();
         }

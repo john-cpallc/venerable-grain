@@ -3,7 +3,7 @@ layout: default
 title: Imagine
 permalink: /imagine/
 description: Describe a piece. The shop will sketch it.
-script: /assets/js/imagine.js
+script: /assets/js/imagine.js?v=real1
 ---
 
 <div class="page page--imagine">
@@ -307,36 +307,35 @@ script: /assets/js/imagine.js
       <a class="btn" id="imagine-download" download="venerable-grain-sketch.jpg" href="#">Download</a>
       <a class="btn" id="imagine-email" href="mailto:{{ site.email }}">Email this sketch</a>
     </figcaption>
+    <form class="imagine-real" id="imagine-real">
+      <p class="imagine-real__lede">If this lived in a real room</p>
+      <p class="madlib">
+        It would be in
+        <label class="madlib__field">
+          <span class="visually-hidden">city or ZIP</span>
+          <input class="madlib-blank madlib-blank--mid" type="text" name="place" maxlength="40" autocomplete="off" placeholder="city or ZIP">
+        </label>.
+        Wanted
+        <label class="madlib__field">
+          <span class="visually-hidden">timeframe</span>
+          <select name="when">
+            <option value="" selected>whenever</option>
+            <option value="with no rush">with no rush</option>
+            <option value="in a few months">in a few months</option>
+            <option value="by a set date">by a set date</option>
+          </select>
+        </label>
+        <label class="madlib__field madlib-other" data-other-for="when" hidden>
+          <span class="visually-hidden">date if you have one</span>
+          <input class="madlib-blank madlib-blank--mid" type="text" name="whenNote" maxlength="40" autocomplete="off" placeholder="when">
+        </label>.
+      </p>
+      <div class="imagine-actions">
+        <button class="btn" type="submit" id="imagine-real-submit">Add this</button>
+      </div>
+      <p class="imagine-status" id="imagine-real-status" role="status"></p>
+    </form>
   </figure>
-
-  <form class="imagine-real" id="imagine-real" hidden>
-    <p class="imagine-real__lede">If this lived in a real room</p>
-    <p class="madlib">
-      It would be in
-      <label class="madlib__field">
-        <span class="visually-hidden">city or ZIP</span>
-        <input class="madlib-blank madlib-blank--mid" type="text" name="place" maxlength="40" autocomplete="off" placeholder="city or ZIP">
-      </label>.
-      Wanted
-      <label class="madlib__field">
-        <span class="visually-hidden">timeframe</span>
-        <select name="when">
-          <option value="" selected>whenever</option>
-          <option value="with no rush">with no rush</option>
-          <option value="in a few months">in a few months</option>
-          <option value="by a set date">by a set date</option>
-        </select>
-      </label>
-      <label class="madlib__field madlib-other" data-other-for="when" hidden>
-        <span class="visually-hidden">date if you have one</span>
-        <input class="madlib-blank madlib-blank--mid" type="text" name="whenNote" maxlength="40" autocomplete="off" placeholder="when">
-      </label>.
-    </p>
-    <div class="imagine-actions">
-      <button class="btn" type="submit" id="imagine-real-submit">Add this</button>
-    </div>
-    <p class="imagine-status" id="imagine-real-status" role="status"></p>
-  </form>
 </div>
 
 <script type="application/json" id="imagine-config">
