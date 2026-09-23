@@ -9,7 +9,7 @@ description: Built to work and to move. Few cuts. Wood first — metal, earth, f
   <header class="page__header">
     <p class="eyebrow">Ethos</p>
     <h1 class="page__title">Materials</h1>
-    <p class="page__lede">The material does the talking. Joints carry the load.</p>
+    <p class="page__lede">The material does the talking. Joinery carries the load. Fantastically simple.</p>
   </header>
 
   <div class="prose">

@@ -1,13 +1,21 @@
-/* Venerable Grain — light gallery restyle */
+/* Venerable Grain — Japandi brand */
 
 :root {
-  --ink: #1a1917;
-  --ground: #f6f5f2;
-  --panel: #ffffff;
-  --hull: #e4e1db;
-  --wood: #7a6548;
-  --type: #1a1917;
-  --type-muted: #6a6560;
+  --sumi: #1a1917;
+  --oak: #7a6548;
+  --moss: #5c6b55;
+  --rice: #f3f1ec;
+  --stone: #e6e2da;
+  --panel: #fffefb;
+  --muted: #6a6560;
+
+  /* Legacy aliases used across the stylesheet */
+  --ink: var(--sumi);
+  --wood: var(--oak);
+  --ground: var(--rice);
+  --hull: var(--stone);
+  --type: var(--sumi);
+  --type-muted: var(--muted);
   --rule: rgba(26, 25, 23, 0.1);
   --overlay: rgba(18, 16, 14, 0.42);
 
@@ -35,7 +43,9 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--ground);
+  background:
+    radial-gradient(ellipse 70% 45% at 8% 0%, rgba(122, 101, 72, 0.05), transparent 55%),
+    linear-gradient(180deg, #efece5 0%, var(--rice) 38%, #e9e5dc 100%);
   color: var(--type);
   font-family: var(--font-body);
   font-weight: 300;
@@ -90,22 +100,54 @@ h1, h2, h3 {
   gap: 1rem;
   height: var(--header-h);
   padding: 0 var(--space);
-  background: rgba(246, 245, 242, 0.9);
+  background: rgba(243, 241, 236, 0.9);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--rule);
 }
 
-.wordmark {
+.brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.brand-lockup:hover {
+  color: var(--oak);
+}
+
+.brand-lockup:hover .brand-mark__bisector,
+.brand-lockup:hover .brand-mark__center {
+  stroke: var(--oak);
+  fill: var(--oak);
+}
+
+.brand-lockup__word {
   font-family: var(--font-display);
   font-size: clamp(1.05rem, 2vw, 1.25rem);
   font-weight: 600;
-  color: var(--ink);
-  text-decoration: none;
   letter-spacing: -0.01em;
 }
 
-.wordmark:hover {
-  color: var(--wood);
+.brand-mark {
+  width: 1.55rem;
+  height: 1.55rem;
+  flex-shrink: 0;
+  display: block;
+}
+
+.brand-mark__ring,
+.brand-mark__chord {
+  stroke: currentColor;
+}
+
+.brand-mark__bisector {
+  stroke: var(--oak);
+}
+
+.brand-mark__center {
+  fill: var(--oak);
 }
 
 .site-nav {
@@ -196,7 +238,7 @@ h1, h2, h3 {
   padding: var(--space);
   padding-bottom: clamp(3rem, 10vh, 5.5rem);
   overflow: hidden;
-  color: #f6f5f2;
+  color: var(--rice);
 }
 
 .hero__media {
@@ -253,15 +295,15 @@ h1, h2, h3 {
   font-weight: 600;
   line-height: 0.95;
   letter-spacing: -0.03em;
-  color: #f6f5f2;
+  color: var(--rice);
 }
 
 .hero__line {
   margin: 0 0 1.75rem;
-  max-width: 26rem;
+  max-width: 28rem;
   font-size: clamp(1rem, 2vw, 1.15rem);
   font-weight: 300;
-  color: rgba(246, 245, 242, 0.82);
+  color: rgba(243, 241, 236, 0.82);
 }
 
 .text-link {
@@ -284,7 +326,7 @@ h1, h2, h3 {
 }
 
 .hero .text-link {
-  color: #f6f5f2;
+  color: var(--rice);
 }
 
 .btn {
@@ -832,6 +874,18 @@ button.btn:disabled {
   text-align: center;
 }
 
+.site-footer__mark {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.85rem;
+}
+
+.site-footer__mark .brand-mark {
+  width: 2rem;
+  height: 2rem;
+  color: var(--sumi);
+}
+
 .site-footer__brand {
   margin: 0 0 0.35rem;
   font-family: var(--font-display);
@@ -858,25 +912,45 @@ button.btn:disabled {
   backdrop-filter: none;
 }
 
-.layout-home .wordmark,
-.layout-home .site-nav a {
-  color: rgba(246, 245, 242, 0.88);
+.layout-home .brand-lockup {
+  color: rgba(243, 241, 236, 0.92);
 }
 
-.layout-home .wordmark:hover,
+.layout-home .brand-mark__bisector {
+  stroke: #c4a882;
+}
+
+.layout-home .brand-mark__center {
+  fill: #c4a882;
+}
+
+.layout-home .brand-lockup:hover {
+  color: var(--rice);
+}
+
+.layout-home .site-nav a {
+  color: rgba(243, 241, 236, 0.88);
+}
+
+.layout-home .brand-lockup:hover .brand-mark__bisector,
+.layout-home .brand-lockup:hover .brand-mark__center {
+  stroke: #c4a882;
+  fill: #c4a882;
+}
+
 .layout-home .site-nav a:hover,
 .layout-home .site-nav a[aria-current="page"] {
-  color: #f6f5f2;
+  color: var(--rice);
 }
 
 .layout-home .nav-toggle {
-  border-color: rgba(246, 245, 242, 0.35);
+  border-color: rgba(243, 241, 236, 0.35);
 }
 
 .layout-home .nav-toggle span,
 .layout-home .nav-toggle span::before,
 .layout-home .nav-toggle span::after {
-  background: #f6f5f2;
+  background: var(--rice);
 }
 
 .layout-home .site-nav {
@@ -886,11 +960,11 @@ button.btn:disabled {
 @media (max-width: 820px) {
   .layout-home .site-nav.is-open {
     background: rgba(18, 16, 14, 0.94);
-    border-bottom-color: rgba(246, 245, 242, 0.12);
+    border-bottom-color: rgba(243, 241, 236, 0.12);
   }
 
   .layout-home .site-nav a {
-    border-bottom-color: rgba(246, 245, 242, 0.12);
+    border-bottom-color: rgba(243, 241, 236, 0.12);
   }
 }
 
