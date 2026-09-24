@@ -2,6 +2,7 @@
 title: Dining table
 category: Modernization
 wood: Quarter-sawn oak
+price: "$1,450"
 order: 1
 image: /assets/images/pieces/dining-table.jpg
 story: /stories/lightening-the-table/

@@ -5,8 +5,8 @@ layout: default
   <header class="piece__header">
     <p class="eyebrow">{{ page.category | default: "Collection" }}</p>
     <h1 class="piece__title">{{ page.title }}</h1>
-    {% if page.wood %}
-    <p class="piece__meta">{{ page.wood }}</p>
+    {% if page.wood or page.price %}
+    <p class="piece__meta">{% if page.wood %}{{ page.wood }}{% endif %}{% if page.wood and page.price %} · {% endif %}{% if page.price %}{{ page.price }}{% endif %}</p>
     {% endif %}
   </header>
   {% if page.image %}

@@ -2,6 +2,7 @@
 title: Pedestal
 category: Restoration
 wood: White oak and cherry
+price: "$750"
 order: 2
 image: /assets/images/pieces/pedestal.jpg
 ---

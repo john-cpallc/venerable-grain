@@ -23,7 +23,7 @@ description: Work meant to be used and moved — new furniture, repair, and mode
         </div>
         {% endif %}
         <h2 class="gallery__name">{{ piece.title }}</h2>
-        <p class="gallery__meta">{{ piece.category }}{% if piece.wood %} · {{ piece.wood }}{% endif %}</p>
+        <p class="gallery__meta">{{ piece.category }}{% if piece.wood %} · {{ piece.wood }}{% endif %}{% if piece.price %} · {{ piece.price }}{% endif %}</p>
       </a>
     </li>
     {% endfor %}
