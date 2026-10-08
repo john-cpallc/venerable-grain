@@ -1,6 +1,6 @@
 # Venerable Grain
 
-Hobby furniture workshop site — solid hardwood, joinery over hardware. Portfolio and process stories first; soft contact for repair, restoration, modernization, and commissions.
+Hobby furniture workshop site — solid hardwood, joinery over hardware. Portfolio first; soft contact for repair, restoration, modernization, and commissions.
 
 **Live:** https://venerablegrain.com  
 **GitHub Pages (until DNS is pointed):** https://john-cpallc.github.io/venerable-grain/
@@ -85,8 +85,7 @@ HTTPS must already work on the custom domain or verification and indexing will f
 
 | Path | Purpose |
 |------|---------|
-| `_pieces/` | Collection items (title, category, wood, image, optional story link) |
-| `_stories/` | Process narratives |
-| `_pages/` | Collection, Imagine, Materials, Stories, About, Contact |
+| `_pieces/` | Collection items (title, category, wood, image, optional extra images) |
+| `_pages/` | Collection, Imagine, Materials, About, Contact |
 | `assets/images/` | Replace SVG placeholders with real photos |
 | `worker/` | Sketch API (not part of the Jekyll build) |

@@ -25,9 +25,6 @@ collections:
   pieces:
     output: true
     permalink: /collection/:name/
-  stories:
-    output: true
-    permalink: /stories/:name/
 
 defaults:
   - scope:
@@ -40,11 +37,6 @@ defaults:
       type: pieces
     values:
       layout: piece
-  - scope:
-      path: ""
-      type: stories
-    values:
-      layout: story
 
 plugins:
   - jekyll-sitemap

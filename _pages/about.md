@@ -27,6 +27,6 @@ description: Furniture, repair, restoration, modernization, and commissions.
   </div>
 
   <div class="prose about-block">
-    <p>For how pieces come together, see <a href="{{ '/stories/' | relative_url }}">Stories</a>. For what goes into them, see <a href="{{ '/materials/' | relative_url }}">Materials</a>.</p>
+    <p>For what goes into the work, see <a href="{{ '/materials/' | relative_url }}">Materials</a>. For finished pieces, see the <a href="{{ '/collection/' | relative_url }}">Collection</a>.</p>
   </div>
 </div>

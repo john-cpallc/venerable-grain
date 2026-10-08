@@ -14,13 +14,17 @@ layout: default
     <img src="{{ page.image | relative_url }}" alt="{{ page.title }}" loading="lazy">
   </figure>
   {% endif %}
+  {% if page.images %}
+  <div class="piece__gallery">
+    {% for img in page.images %}
+    <figure class="piece__figure">
+      <img src="{{ img | relative_url }}" alt="{{ page.title }}" loading="lazy">
+    </figure>
+    {% endfor %}
+  </div>
+  {% endif %}
   <div class="prose">
     {{ content }}
   </div>
-  {% if page.story %}
-  <p class="piece__story-link">
-    <a href="{{ page.story | relative_url }}">Read the process story</a>
-  </p>
-  {% endif %}
   <p class="back-link"><a href="{{ '/collection/' | relative_url }}">← Collection</a></p>
 </article>

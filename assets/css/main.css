@@ -469,92 +469,62 @@ h1, h2, h3 {
   color: var(--type-muted);
 }
 
-/* ——— Stories list ——— */
+/* ——— Piece detail ——— */
 
-.story-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  border-top: 1px solid var(--rule);
-}
-
-.story-list__item {
-  border-bottom: 1px solid var(--rule);
-  animation: rise 0.8s var(--ease) both;
-}
-
-.story-list__link {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 1rem;
-  align-items: baseline;
-  padding: 1.75rem 0;
-  color: inherit;
-  text-decoration: none;
-}
-
-.story-list__link:hover .story-list__title {
-  color: var(--wood);
-}
-
-.story-list__title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(1.25rem, 3vw, 1.55rem);
-  font-weight: 500;
-  transition: color 0.25s var(--ease);
-}
-
-.story-list__sub {
-  margin: 0.35rem 0 0;
-  color: var(--type-muted);
-  font-size: 0.95rem;
-}
-
-.story-list__mark {
-  font-family: var(--font-body);
-  font-size: 0.7rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--type-muted);
-}
-
-/* ——— Piece / story detail ——— */
-
-.piece,
-.story {
+.piece {
   width: min(100% - 2 * var(--space), 52rem);
   margin: 0 auto;
   padding: clamp(2.5rem, 6vw, 4.5rem) 0;
 }
 
-.piece__title,
-.story__title {
+.piece__title {
   margin: 0 0 0.5rem;
   font-size: clamp(2rem, 5vw, 2.85rem);
 }
 
-.piece__meta,
-.story__subtitle {
+.piece__meta {
   margin: 0 0 2rem;
   color: var(--type-muted);
 }
 
-.piece__figure,
-.story__figure {
+.piece__figure {
   margin: 0 0 2rem;
   background: var(--hull);
   overflow: hidden;
 }
 
-.piece__figure img,
-.story__figure img {
+.piece__gallery {
+  display: grid;
+  gap: 0.85rem;
+  margin: 0 0 2rem;
+}
+
+.piece__gallery .piece__figure {
+  margin: 0;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  background: var(--hull);
+}
+
+@media (min-width: 640px) {
+  .piece__gallery:has(.piece__figure:nth-child(2)) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.piece__figure img {
   width: 100%;
   height: auto;
   display: block;
   animation: reveal 1.1s var(--ease) both;
+}
+
+.piece__gallery .piece__figure img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
 }
 
 @keyframes reveal {
@@ -568,8 +538,6 @@ h1, h2, h3 {
   }
 }
 
-.piece__story-link,
-.story__piece-link,
 .back-link {
   margin-top: 2.5rem;
   font-family: var(--font-body);
