@@ -3,7 +3,7 @@ layout: default
 title: Imagine
 permalink: /imagine/
 description: Describe a piece. The shop will sketch it.
-script: /assets/js/imagine-feedback.js?v=3
+script: /assets/js/imagine-feedback.js?v=2
 ---
 
 <div class="page page--imagine">
