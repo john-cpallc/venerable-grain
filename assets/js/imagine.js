@@ -25,8 +25,7 @@
     "support",
     "wear",
     "users",
-    "budget",
-    "when"
+    "budget"
   ];
   var TEXT_KEYS = [
     "pieceOther",
@@ -42,8 +41,7 @@
     "avoid",
     "reference",
     "like",
-    "change",
-    "whenNote"
+    "change"
   ];
   var OPTIONS = {
     purpose: {
@@ -271,10 +269,11 @@
       wrap.hidden = !show;
     });
     if (realForm) {
-      var whenWrap = realForm.querySelector('[data-other-for="when"]');
-      var whenSelect = realForm.querySelector('[name="when"]');
-      if (whenWrap && whenSelect) {
-        whenWrap.hidden = whenSelect.value !== "by a set date";
+      var surpriseWrap = realForm.querySelector('[data-other-for="surprise"]');
+      var surpriseSelect = realForm.querySelector('[name="surprise"]');
+      if (surpriseWrap && surpriseSelect) {
+        surpriseWrap.hidden =
+          surpriseSelect.value !== "unpleasantly surprised";
       }
     }
   }
@@ -348,28 +347,48 @@
     if (realStatusEl) realStatusEl.textContent = text || "";
   }
 
+  var BETRAYED_LABELS = {
+    piece: "the piece type",
+    room: "the room",
+    purpose: "what it’s for",
+    size: "the size",
+    style: "the style",
+    look: "the look",
+    wood: "the material",
+    finish: "the finish",
+    sheen: "the sheen",
+    include: "what to include",
+    avoid: "what to avoid",
+    support: "what it holds",
+    wear: "how hard it gets used",
+    users: "who uses it",
+    priority: "what matters most",
+    unusual: "the design risk",
+    overall: "the whole sketch"
+  };
+
   function realDetails() {
-    if (!realForm) return { place: "", when: "", whenNote: "" };
-    var when = (realForm.when && realForm.when.value) || "";
-    var whenNote = (realForm.whenNote && realForm.whenNote.value.trim()) || "";
-    return {
-      place: (realForm.place && realForm.place.value.trim()) || "",
-      when: when,
-      whenNote: when === "by a set date" ? whenNote : ""
-    };
+    if (!realForm) return { surprise: "", betrayed: "" };
+    var surprise = (realForm.surprise && realForm.surprise.value) || "";
+    var betrayed =
+      surprise === "unpleasantly surprised" && realForm.betrayed
+        ? realForm.betrayed.value || ""
+        : "";
+    return { surprise: surprise, betrayed: betrayed };
   }
 
   function updateMailto() {
     var extra = [];
     var details = realDetails();
-    if (details.place) extra.push("It would be in " + details.place + ".");
-    if (details.when) {
-      extra.push(
-        "Wanted " +
-          details.when +
-          (details.whenNote ? " (" + details.whenNote + ")" : "") +
-          "."
-      );
+    if (details.surprise) {
+      extra.push("I am " + details.surprise + ".");
+      if (details.betrayed) {
+        extra.push(
+          "It betrayed " +
+            (BETRAYED_LABELS[details.betrayed] || details.betrayed) +
+            "."
+        );
+      }
     }
     var bodyText = encodeURIComponent(
       "I used Imagine on the site.\n\n" +
@@ -459,8 +478,15 @@
     realForm.addEventListener("submit", function (event) {
       event.preventDefault();
       var details = realDetails();
-      if (!details.place && !details.when && !details.whenNote) {
-        setRealStatus("Add a place or a time.");
+      if (!details.surprise) {
+        setRealStatus("Say how the sketch landed.");
+        return;
+      }
+      if (
+        details.surprise === "unpleasantly surprised" &&
+        !details.betrayed
+      ) {
+        setRealStatus("Pick what it betrayed.");
         return;
       }
       if (!lastBriefId) {
@@ -475,27 +501,26 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           briefId: lastBriefId,
-          place: details.place,
-          when: details.when,
-          whenNote: details.whenNote
+          surprise: details.surprise,
+          betrayed: details.betrayed
         })
       })
         .then(function (res) {
           return res.json().then(function (body) {
             if (!res.ok) {
-              throw new Error(body.error || "Could not add that.");
+              throw new Error(body.error || "Could not send that.");
             }
             return body;
           });
         })
         .then(function () {
           updateMailto();
-          setRealStatus("Added.");
+          setRealStatus("Sent.");
         })
         .catch(function (err) {
-          var msg = err.message || "Could not add that.";
+          var msg = err.message || "Could not send that.";
           if (err.name === "TypeError" || msg === "Failed to fetch") {
-            msg = "Could not add that.";
+            msg = "Could not send that.";
           }
           setRealStatus(msg);
         })

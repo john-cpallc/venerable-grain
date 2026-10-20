@@ -3,7 +3,7 @@ layout: default
 title: Imagine
 permalink: /imagine/
 description: Describe a piece. The shop will sketch it.
-script: /assets/js/imagine.js?v=real1
+script: /assets/js/imagine.js?v=surprise1
 ---
 
 <div class="page page--imagine">
@@ -308,30 +308,47 @@ script: /assets/js/imagine.js?v=real1
       <a class="btn" id="imagine-email" href="mailto:{{ site.email }}">Email this sketch</a>
     </figcaption>
     <form class="imagine-real" id="imagine-real">
-      <p class="imagine-real__lede">If this lived in a real room</p>
+      <p class="imagine-real__lede">How this landed</p>
       <p class="madlib">
-        It would be in
+        I am
         <label class="madlib__field">
-          <span class="visually-hidden">city or ZIP</span>
-          <input class="madlib-blank madlib-blank--mid" type="text" name="place" maxlength="40" autocomplete="off" placeholder="city or ZIP">
-        </label>.
-        Wanted
-        <label class="madlib__field">
-          <span class="visually-hidden">timeframe</span>
-          <select name="when">
-            <option value="" selected>whenever</option>
-            <option value="with no rush">with no rush</option>
-            <option value="in a few months">in a few months</option>
-            <option value="by a set date">by a set date</option>
+          <span class="visually-hidden">how surprised you are</span>
+          <select name="surprise" required>
+            <option value="" selected>…</option>
+            <option value="pleasantly surprised">pleasantly surprised</option>
+            <option value="unpleasantly surprised">unpleasantly surprised</option>
+            <option value="not surprised">not surprised</option>
           </select>
-        </label>
-        <label class="madlib__field madlib-other" data-other-for="when" hidden>
-          <span class="visually-hidden">date if you have one</span>
-          <input class="madlib-blank madlib-blank--mid" type="text" name="whenNote" maxlength="40" autocomplete="off" placeholder="when">
         </label>.
+        <span class="madlib-other" data-other-for="surprise" hidden>
+          It betrayed
+          <label class="madlib__field">
+            <span class="visually-hidden">which field missed</span>
+            <select name="betrayed">
+              <option value="" selected>…</option>
+              <option value="piece">the piece type</option>
+              <option value="room">the room</option>
+              <option value="purpose">what it’s for</option>
+              <option value="size">the size</option>
+              <option value="style">the style</option>
+              <option value="look">the look</option>
+              <option value="wood">the material</option>
+              <option value="finish">the finish</option>
+              <option value="sheen">the sheen</option>
+              <option value="include">what to include</option>
+              <option value="avoid">what to avoid</option>
+              <option value="support">what it holds</option>
+              <option value="wear">how hard it gets used</option>
+              <option value="users">who uses it</option>
+              <option value="priority">what matters most</option>
+              <option value="unusual">the design risk</option>
+              <option value="overall">the whole sketch</option>
+            </select>
+          </label>.
+        </span>
       </p>
       <div class="imagine-actions">
-        <button class="btn" type="submit" id="imagine-real-submit">Add this</button>
+        <button class="btn" type="submit" id="imagine-real-submit">Send this</button>
       </div>
       <p class="imagine-status" id="imagine-real-status" role="status"></p>
     </form>

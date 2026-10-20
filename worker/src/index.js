@@ -146,13 +146,9 @@ async function patchBrief(env, follow) {
     throw err;
   }
   const brief = JSON.parse(await existing.text());
-  if (follow.place) brief.place = follow.place;
-  if (follow.when) brief.when = follow.when;
-  if (follow.whenNote) brief.whenNote = follow.whenNote;
-  if (brief.slots && typeof brief.slots === "object") {
-    if (follow.when) brief.slots.when = follow.when;
-    if (follow.whenNote) brief.slots.whenNote = follow.whenNote;
-  }
+  brief.surprise = follow.surprise;
+  if (follow.betrayed) brief.betrayed = follow.betrayed;
+  else delete brief.betrayed;
   await env.SKETCHES.put(key, JSON.stringify(brief, null, 2), {
     httpMetadata: { contentType: "application/json" },
   });
@@ -223,7 +219,7 @@ export default {
       } catch {
         throw new Error(
           url.pathname === "/brief"
-            ? "Add a place or a time."
+            ? "Say how the sketch landed."
             : "Describe the piece using the line on the page."
         );
       }

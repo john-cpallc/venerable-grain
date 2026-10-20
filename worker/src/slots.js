@@ -102,6 +102,30 @@ export const SLOTS = {
   ],
   when: ["with no rush", "in a few months", "by a set date"],
   feel: ["at ease", "proud", "delighted", "grounded", "impressed"],
+  surprise: [
+    "pleasantly surprised",
+    "unpleasantly surprised",
+    "not surprised",
+  ],
+  betrayed: [
+    "piece",
+    "room",
+    "purpose",
+    "size",
+    "style",
+    "look",
+    "wood",
+    "finish",
+    "sheen",
+    "include",
+    "avoid",
+    "support",
+    "wear",
+    "users",
+    "priority",
+    "unusual",
+    "overall",
+  ],
 };
 
 export const PRIORITIES = [
@@ -360,22 +384,25 @@ const BRIEF_ID = /^\d{4}-\d{2}-\d{2}\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-
 
 export function parseFollowup(raw) {
   if (!raw || typeof raw !== "object") {
-    throw new Error("Add a place or a time.");
+    throw new Error("Say how the sketch landed.");
   }
   const briefId = String(raw.briefId || "").trim();
   if (!BRIEF_ID.test(briefId)) {
     throw new Error("That sketch is gone.");
   }
-  const place = cleanText(raw.place, TEXTS.place);
-  let when = String(raw.when || "").trim();
-  if (when && !SLOTS.when.includes(when)) {
-    throw new Error("That line is not one of the shop’s options.");
+  const surprise = String(raw.surprise || "").trim();
+  if (!SLOTS.surprise.includes(surprise)) {
+    throw new Error("Say how the sketch landed.");
   }
-  const whenNote = cleanText(raw.whenNote, TEXTS.whenNote);
-  if (!place && !when && !whenNote) {
-    throw new Error("Add a place or a time.");
+  let betrayed = String(raw.betrayed || "").trim();
+  if (surprise === "unpleasantly surprised") {
+    if (!SLOTS.betrayed.includes(betrayed)) {
+      throw new Error("Pick what it betrayed.");
+    }
+  } else {
+    betrayed = "";
   }
-  return { briefId, place, when, whenNote };
+  return { briefId, surprise, betrayed };
 }
 
 export function sentenceFromSlots(s) {
