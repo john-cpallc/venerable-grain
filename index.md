@@ -7,7 +7,10 @@ permalink: /
 
 <section class="hero" aria-label="Introduction">
   <div class="hero__media" aria-hidden="true">
-    <img src="{{ '/assets/images/hero.jpg' | relative_url }}" alt="" width="1024" height="682">
+    <picture>
+      <source media="(max-width: 820px)" srcset="{{ '/assets/images/hero-mobile.jpg' | relative_url }}">
+      <img src="{{ '/assets/images/hero.jpg' | relative_url }}" alt="" width="1024" height="682">
+    </picture>
   </div>
   <div class="hero__veil" aria-hidden="true"></div>
   <div class="hero__content">
