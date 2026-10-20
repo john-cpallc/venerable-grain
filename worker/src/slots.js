@@ -316,6 +316,9 @@ function shopVisionLook(s) {
   ].join(" ");
 }
 
+// Feedback-only; must not be required on /generate.
+const FOLLOWUP_KEYS = new Set(["surprise", "betrayed"]);
+
 export function parseSlots(raw) {
   if (!raw || typeof raw !== "object") {
     throw new Error("Describe the piece using the line on the page.");
@@ -323,6 +326,7 @@ export function parseSlots(raw) {
 
   const slots = {};
   for (const key of Object.keys(SLOTS)) {
+    if (FOLLOWUP_KEYS.has(key)) continue;
     let value = String(raw[key] || "").trim();
     if (!value) {
       if (key === "when") {
