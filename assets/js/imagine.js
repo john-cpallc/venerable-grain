@@ -11,6 +11,7 @@
   var realForm = document.getElementById("imagine-real");
   var realStatusEl = document.getElementById("imagine-real-status");
   var realSubmit = document.getElementById("imagine-real-submit");
+  var page = form.closest(".page--imagine");
   var config = {};
   var SELECT_KEYS = [
     "piece",
@@ -353,6 +354,19 @@
     }
   }
 
+  function revealSketch() {
+    if (page) page.classList.add("has-sketch");
+    result.hidden = false;
+    var scroll = function () {
+      result.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+    if (image.complete && image.naturalWidth) {
+      scroll();
+    } else {
+      image.addEventListener("load", scroll, { once: true });
+    }
+  }
+
   function setStatus(text) {
     statusEl.textContent = text || "";
   }
@@ -465,8 +479,8 @@
           toggleOthers();
         }
         updateMailto();
-        result.hidden = false;
         setStatus("");
+        revealSketch();
       })
       .catch(function (err) {
         var msg = err.message || "The sketch did not come through.";
