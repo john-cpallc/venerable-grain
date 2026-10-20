@@ -339,6 +339,20 @@
     return input ? input.value : "";
   }
 
+  function resetTurnstile() {
+    var widget = form.querySelector(".cf-turnstile");
+    if (!widget || typeof turnstile === "undefined" || !turnstile.reset) return;
+    try {
+      turnstile.reset(widget);
+    } catch (err) {
+      try {
+        turnstile.reset();
+      } catch (err2) {
+        /* ignore */
+      }
+    }
+  }
+
   function setStatus(text) {
     statusEl.textContent = text || "";
   }
@@ -462,6 +476,7 @@
         setStatus(msg);
       })
       .then(function () {
+        resetTurnstile();
         submit.disabled = false;
       });
   });
