@@ -6,7 +6,7 @@ Serverless `/generate` endpoint for the Mad Libs sketch page. The Jekyll site st
 
 1. Create a [fal.ai](https://fal.ai) account and copy an API key.
 2. Optional: an OpenAI key so the filled sentence is rewritten before FLUX. Without it, a piece-aware workshop template is used.
-3. Optional: a Cloudflare Turnstile widget. Put the site key in `_config.yml` (`imagine.turnstile_site_key`) and the secret here.
+3. Cloudflare Turnstile (required in production). Site key lives in `_config.yml` (`imagine.turnstile_site_key`); secret is `TURNSTILE_SECRET` on the Worker. Widget name in the CF dashboard: **Venerable Grain Imagine**.
 
 Image model is `FAL_MODEL` in `wrangler.toml` (default `fal-ai/flux/dev`). Schnell is cheaper but tends toward generic catalog forms; Pro is a later bump if sketches still look flat.
 

@@ -376,6 +376,12 @@ h1, h2, h3 {
   font-size: 1.05rem;
 }
 
+.page__note {
+  margin: 0.65rem 0 0;
+  color: var(--type-muted);
+  font-size: 0.92rem;
+}
+
 .prose {
   max-width: var(--measure);
 }

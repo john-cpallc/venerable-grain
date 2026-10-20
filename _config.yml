@@ -9,7 +9,7 @@ email: "macdelay@gmail.com"
 # Sketch tool (Cloudflare Worker). Leave api blank to hide Generate until deployed.
 imagine:
   api: "https://venerable-grain-imagine.vgimagine.workers.dev"
-  turnstile_site_key: ""
+  turnstile_site_key: "0x4AAAAAAFcWKaZIX9J56q-o"
 
 # Analytics & Search Console
 # GA4 Measurement ID only (not the full script). HTML-file verify: /google8fff43164876f636.html

@@ -8,9 +8,10 @@ script: /assets/js/imagine.js?v=surprise1
 
 <div class="page page--imagine">
   <header class="page__header">
-    <p class="eyebrow">Sketch</p>
+    <p class="eyebrow">Beta sketch</p>
     <h1 class="page__title">Imagine</h1>
     <p class="page__lede">Say what it is, how it should look and work, and what a store version gets wrong. Everyday words are enough.</p>
+    <p class="page__note">Limited daily sketches while we learn. If the shop puts the pencil down, try again tomorrow.</p>
   </header>
 
   <form class="imagine" id="imagine-form" novalidate>
