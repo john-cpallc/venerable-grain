@@ -3,7 +3,7 @@ layout: default
 title: Imagine
 permalink: /imagine/
 description: Describe a piece. The shop will sketch it.
-script: /assets/js/imagine.js?v=surprise1
+script: /assets/js/imagine.js?v=surprise2
 ---
 
 <div class="page page--imagine">
@@ -308,7 +308,7 @@ script: /assets/js/imagine.js?v=surprise1
       <a class="btn" id="imagine-download" download="venerable-grain-sketch.jpg" href="#">Download</a>
       <a class="btn" id="imagine-email" href="mailto:{{ site.email }}">Email this sketch</a>
     </figcaption>
-    <form class="imagine-real" id="imagine-real">
+    <form class="imagine-real" id="imagine-real" novalidate>
       <p class="imagine-real__lede">How this landed</p>
       <p class="madlib">
         I am
